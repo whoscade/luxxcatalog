@@ -1,87 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LUXXCATALOG</title>
-  <style>
-    @font-face {
-      font-family: 'Experimento';
-      src: url('../fonts/Experimento.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'Gadetyper';
-      src: url('../fonts/GadetyperRegular.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'TimesNewArial';
-      src: url('../fonts/timesnewarial.ttf') format('truetype');
-    }
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUXXCATALOG</title>
+<style>
     body {
-      margin: 0;
-      padding: 0;
-      background-color: #ff0000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-      overflow: hidden;
+        margin: 0;
+        padding: 0;
+        background-color: #ff0000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
     }
 
-    .logo {
-      display: flex;
-      flex-wrap: wrap;
-      font-size: 10vw;
+    @font-face {
+        font-family: 'Experimento';
+        src: url('../fonts/Experimento.ttf') format('truetype');
+    }
+    @font-face {
+        font-family: 'Gadetyper';
+        src: url('../fonts/GadetyperRegular.otf') format('opentype');
+    }
+    @font-face {
+        font-family: 'TimesNewArial';
+        src: url('../fonts/timesnewarial.ttf') format('truetype');
     }
 
-    .logo span {
-      margin: 0 1px;
+    #logo {
+        font-size: 120px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
-    .experimento { font-family: 'Experimento', sans-serif; }
-    .gadetyper { font-family: 'Gadetyper', sans-serif; }
-    .timesnewarial { font-family: 'TimesNewArial', sans-serif; }
-
-    @media (max-width: 600px) {
-      .logo {
-        font-size: 15vw;
-      }
+    .letter {
+        display: inline-block;
+        font-size: 120px;
     }
-  </style>
+</style>
 </head>
 <body>
-  <div class="logo" id="logo"></div>
-  <script>
+<div id="logo"></div>
+<script>
     const text = "LUXXCATALOG";
-    const fonts = ['experimento', 'gadetyper', 'timesnewarial'];
+    const fonts = ['Experimento', 'Gadetyper', 'TimesNewArial'];
     const logoContainer = document.getElementById('logo');
-    let letters = [];
 
-    function createLogo() {
-      logoContainer.innerHTML = '';
-      letters = [];
-      for (let i = 0; i < text.length; i++) {
-        const span = document.createElement('span');
-        span.textContent = text[i];
-        span.className = fonts[Math.floor(Math.random() * fonts.length)];
-        logoContainer.appendChild(span);
-        letters.push(span);
-      }
+    function randomFont() {
+        return fonts[Math.floor(Math.random() * fonts.length)];
     }
 
-    createLogo();
-
-    function glitch() {
-      const changes = Math.floor(Math.random() * text.length / 2) + 1;
-      for (let i = 0; i < changes; i++) {
-        const index = Math.floor(Math.random() * letters.length);
-        letters[index].className = fonts[Math.floor(Math.random() * fonts.length)];
-      }
+    function renderLogo() {
+        logoContainer.innerHTML = '';
+        for (let i = 0; i < text.length; i++) {
+            const span = document.createElement('span');
+            span.classList.add('letter');
+            span.textContent = text[i];
+            span.style.fontFamily = randomFont();
+            logoContainer.appendChild(span);
+        }
     }
 
-    setInterval(glitch, 50);
-  </script>
+    renderLogo();
+    setInterval(renderLogo, 200);
+</script>
 </body>
 </html>
