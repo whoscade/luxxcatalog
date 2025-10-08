@@ -5,67 +5,69 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LUXXCATALOG</title>
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        background-color: #ff0000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        overflow: hidden;
-    }
-
     @font-face {
         font-family: 'Experimento';
         src: url('fonts/Experimento.ttf') format('truetype');
     }
     @font-face {
-        font-family: 'Gadetyper';
+        font-family: 'GadetyperRegular';
         src: url('fonts/GadetyperRegular.otf') format('opentype');
     }
     @font-face {
-        font-family: 'TimesNewArial';
+        font-family: 'timesnewarial';
         src: url('fonts/timesnewarial.ttf') format('truetype');
     }
 
-    #logo {
-        font-size: 120px;
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    body {
         display: flex;
-        flex-wrap: wrap;
         justify-content: center;
+        align-items: center;
+        background-color: #ff0000;
+        overflow: hidden;
+    }
+
+    #logo {
+        font-size: clamp(2rem, 10vw, 8rem);
+        line-height: 1;
+        white-space: nowrap;
+        display: flex;
     }
 
     .letter {
         display: inline-block;
-        font-size: 120px;
     }
 </style>
 </head>
 <body>
+
 <div id="logo"></div>
+
 <script>
-    const text = "LUXXCATALOG";
-    const fonts = ['Experimento', 'Gadetyper', 'TimesNewArial'];
-    const logoContainer = document.getElementById('logo');
+    const logoText = "LUXXCATALOG";
+    const logo = document.getElementById('logo');
 
-    function randomFont() {
-        return fonts[Math.floor(Math.random() * fonts.length)];
-    }
+    const fonts = ['Experimento', 'GadetyperRegular', 'timesnewarial'];
 
-    function renderLogo() {
-        logoContainer.innerHTML = '';
-        for (let i = 0; i < text.length; i++) {
+    function randomizeLogo() {
+        logo.innerHTML = '';
+        for (let char of logoText) {
             const span = document.createElement('span');
             span.classList.add('letter');
-            span.textContent = text[i];
-            span.style.fontFamily = randomFont();
-            logoContainer.appendChild(span);
+            span.textContent = char;
+            span.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+            logo.appendChild(span);
         }
     }
 
-    renderLogo();
-    setInterval(renderLogo, 200);
+    randomizeLogo();
+    setInterval(randomizeLogo, 300); // adjust speed here
 </script>
+
 </body>
 </html>
