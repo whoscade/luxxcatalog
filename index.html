@@ -52,8 +52,6 @@
         justify-content: center;
         align-items: center;
         background-color: red;
-        position: relative;
-        overflow: hidden;
     }
 
     #logo {
@@ -61,11 +59,24 @@
         line-height: 1;
         white-space: nowrap;
         display: flex;
-        transition: transform 0.1s ease, opacity 0.1s ease;
     }
 
     .letter {
         display: inline-block;
+    }
+
+    .panel.split {
+        display: flex;
+    }
+
+    .split .left {
+        flex: 1;
+        background-color: black;
+    }
+
+    .split .right {
+        flex: 1;
+        background-color: red;
     }
 </style>
 </head>
@@ -75,11 +86,20 @@
     <div class="panel" id="logo-panel">
         <div id="logo"></div>
     </div>
+
+    <div class="panel split">
+        <div class="left"></div>
+        <div class="right"></div>
+    </div>
+
     <div class="panel"></div>
     <div class="panel" id="logo-panel-clone">
         <div id="logo"></div>
     </div>
-    <div class="panel"></div>
+    <div class="panel split">
+        <div class="left"></div>
+        <div class="right"></div>
+    </div>
 </div>
 
 <script>
@@ -122,16 +142,6 @@
         if (carousel.scrollLeft < 0) {
             carousel.scrollLeft = carousel.scrollWidth / 2;
         }
-
-        const logoPanel = document.querySelector('#logo-panel #logo');
-        const scrollAmount = carousel.scrollLeft;
-        const fadeStart = 0;
-        const fadeEnd = window.innerWidth;
-
-        let opacity = 1 - (scrollAmount - fadeStart) / fadeEnd;
-        opacity = Math.max(0, Math.min(1, opacity));
-        logoPanel.style.opacity = opacity;
-        logoPanel.style.transform = `translateY(${-scrollAmount * 0.2}px)`;
 
         requestAnimationFrame(animate);
     }
