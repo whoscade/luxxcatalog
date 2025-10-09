@@ -22,6 +22,7 @@
         margin: 0;
         padding: 0;
         height: 100%;
+        overflow: hidden;
     }
 
     body {
@@ -30,6 +31,7 @@
         align-items: center;
         background-color: #ff0000;
         overflow: hidden;
+        position: relative;
     }
 
     #logo {
@@ -37,95 +39,58 @@
         line-height: 1;
         white-space: nowrap;
         display: flex;
+        z-index: 10;
+        position: relative;
     }
 
     .letter {
         display: inline-block;
     }
 
-    #bottom-menu {
+    #bottomMenu {
         position: fixed;
-        bottom: -50px;
+        bottom: -60px;
         left: 0;
         width: 100%;
+        height: 60px;
         background: black;
-        color: white;
         display: flex;
         align-items: center;
-        justify-content: flex-start;
-        padding: 10px;
+        padding-left: 20px;
+        z-index: 5;
+        transition: bottom 0.15s ease-in-out;
         font-family: monospace;
-        transition: bottom 0.3s;
-        z-index: 999;
     }
 
-    #bottom-menu a {
+    #bottomMenu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    #bottomMenu ul li {
+        margin: 0 10px;
         color: white;
+    }
+
+    #bottomMenu ul li a.menu-link {
         text-decoration: none;
-        margin: 0 15px;
-        font-size: 16px;
-        cursor: pointer;
+        color: white;
+        font-family: monospace;
+        transition: border-bottom 0.2s ease-in-out;
         border-bottom: 1px solid transparent;
-        transition: border-bottom 0.2s;
     }
 
-    #bottom-menu a:hover {
+    #bottomMenu ul li a.menu-link:hover {
         border-bottom: 1px solid white;
     }
 
-    #bottom-menu .divider {
-        flex-grow: 1;
-        border-bottom: 1px solid white;
-        margin: 0 15px;
-    }
-
-    #email-popup {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: black;
+    .separator {
+        cursor: default;
         color: white;
-        padding: 30px;
-        border: 3px solid red;
-        display: none;
-        z-index: 1000;
-        font-family: monospace;
-        text-align: center;
-    }
-
-    #email-popup input[type="email"] {
-        padding: 8px;
-        margin: 10px 0;
-        width: 80%;
-        border: none;
-        outline: none;
-    }
-
-    #email-popup button {
-        padding: 8px 20px;
-        background: white;
-        color: black;
-        border: 2px solid red;
-        cursor: pointer;
-        font-family: monospace;
-        transition: background 0.3s, color 0.3s;
-    }
-
-    #email-popup button:hover {
-        background: black;
-        color: white;
-    }
-
-    #popup-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.6);
-        display: none;
-        z-index: 999;
+        user-select: none;
     }
 </style>
 </head>
@@ -133,23 +98,18 @@
 
 <div id="logo"></div>
 
-<div id="popup-overlay"></div>
-<div id="email-popup">
-    <h2>JOIN THE MAILING LIST</h2>
-    <input type="email" placeholder="Type your email here">
-    <br>
-    <button id="submit-email">Submit</button>
-</div>
-
-<div id="bottom-menu">
-    <a id="browse-btn">BROWSE</a>
-    <div class="divider"></div>
-    <a id="mailing-list-btn">MAILING LIST</a>
+<div id="bottomMenu">
+    <ul>
+        <li><a href="#" class="menu-link">BROWSE</a></li>
+        <li class="separator">⎯⎯⎯⎯⎯</li>
+        <li><a href="#" class="menu-link">MAILING LIST</a></li>
+    </ul>
 </div>
 
 <script>
     const logoText = "LUXXCATALOG";
     const logo = document.getElementById('logo');
+
     const fonts = ['Experimento', 'GadetyperRegular', 'timesnewarial'];
 
     function randomizeLogo() {
@@ -166,30 +126,28 @@
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
-    let lastScroll = window.scrollY;
-    const bottomMenu = document.getElementById('bottom-menu');
+    let bottomMenu = document.getElementById('bottomMenu');
 
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > lastScroll) {
-            bottomMenu.style.bottom = "-50px";
-        } else {
+    window.addEventListener('wheel', function(e) {
+        if (e.deltaY > 0) {
             bottomMenu.style.bottom = "0px";
+        } else {
+            bottomMenu.style.bottom = "-60px";
         }
-        lastScroll = window.scrollY;
     });
 
-    const mailingListBtn = document.getElementById('mailing-list-btn');
-    const popup = document.getElementById('email-popup');
-    const overlay = document.getElementById('popup-overlay');
-
-    mailingListBtn.addEventListener('click', () => {
-        popup.style.display = 'block';
-        overlay.style.display = 'block';
+    let touchStartY = 0;
+    window.addEventListener('touchstart', function(e) {
+        touchStartY = e.touches[0].clientY;
     });
 
-    overlay.addEventListener('click', () => {
-        popup.style.display = 'none';
-        overlay.style.display = 'none';
+    window.addEventListener('touchmove', function(e) {
+        let touchEndY = e.touches[0].clientY;
+        if (touchEndY < touchStartY - 10) {
+            bottomMenu.style.bottom = "0px";
+        } else if (touchEndY > touchStartY + 10) {
+            bottomMenu.style.bottom = "-60px";
+        }
     });
 </script>
 
