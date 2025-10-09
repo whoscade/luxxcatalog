@@ -83,13 +83,20 @@
         position: fixed;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%) scale(0);
         background: black;
         color: white;
-        padding: 20px;
-        border: 2px solid red;
+        padding: 30px;
+        border: 3px solid red;
         font-family: monospace;
         z-index: 10000;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        opacity: 0;
+    }
+
+    #popup.show {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
     }
 
     #popup input {
@@ -98,6 +105,7 @@
         border: 1px solid white;
         background: black;
         color: white;
+        width: 200px;
     }
 
     #popup button {
@@ -126,10 +134,10 @@
 </div>
 
 <div id="popup">
-    <div>Type your email here</div>
+    <div style="font-size: 1.2em; font-weight: bold;">type your email here</div>
     <input type="text" placeholder="email@example.com">
     <br>
-    <button id="closePopup">Close</button>
+    <button id="closePopup">close</button>
 </div>
 
 <script>
@@ -180,11 +188,11 @@
     const closePopup = document.getElementById('closePopup');
 
     mailingBtn.addEventListener('click', () => {
-        popup.style.display = 'block';
+        popup.classList.add('show');
     });
 
     closePopup.addEventListener('click', () => {
-        popup.style.display = 'none';
+        popup.classList.remove('show');
     });
 </script>
 
