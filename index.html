@@ -73,22 +73,27 @@
         <div id="logo"></div>
     </div>
     <div class="panel"></div>
+    <div class="panel" id="logo-panel-clone">
+        <div id="logo"></div>
+    </div>
+    <div class="panel"></div>
 </div>
 
 <script>
     const logoText = "LUXXCATALOG";
-    const logo = document.getElementById('logo');
     const fonts = ['Experimento', 'GadetyperRegular', 'timesnewarial'];
 
     function randomizeLogo() {
-        logo.innerHTML = '';
-        for (let char of logoText) {
-            const span = document.createElement('span');
-            span.classList.add('letter');
-            span.textContent = char;
-            span.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
-            logo.appendChild(span);
-        }
+        document.querySelectorAll('#logo').forEach(logo => {
+            logo.innerHTML = '';
+            for (let char of logoText) {
+                const span = document.createElement('span');
+                span.classList.add('letter');
+                span.textContent = char;
+                span.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+                logo.appendChild(span);
+            }
+        });
     }
 
     randomizeLogo();
@@ -98,7 +103,13 @@
 
     window.addEventListener('wheel', (e) => {
         e.preventDefault();
-        carousel.scrollLeft += e.deltaY;
+        carousel.scrollLeft += e.deltaY * 2; // speed multiplier
+        if (carousel.scrollLeft >= carousel.scrollWidth / 2) {
+            carousel.scrollLeft = 0;
+        }
+        if (carousel.scrollLeft < 0) {
+            carousel.scrollLeft = carousel.scrollWidth / 2;
+        }
     }, { passive: false });
 </script>
 
