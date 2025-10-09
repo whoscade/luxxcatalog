@@ -40,6 +40,7 @@
     .panel {
         flex: 0 0 100vw;
         height: 100vh;
+        transition: transform 0.5s ease;
     }
 
     #logo-panel {
@@ -68,10 +69,6 @@
         <div id="logo"></div>
     </div>
     <div class="panel"></div>
-    <div class="panel" id="logo-panel-clone">
-        <div id="logo"></div>
-    </div>
-    <div class="panel"></div>
 </div>
 
 <script>
@@ -79,36 +76,44 @@
     const fonts = ['Experimento', 'GadetyperRegular', 'timesnewarial'];
 
     function randomizeLogo() {
-        document.querySelectorAll('#logo').forEach(logo => {
-            logo.innerHTML = '';
-            for (let char of logoText) {
-                const span = document.createElement('span');
-                span.classList.add('letter');
-                span.textContent = char;
-                span.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
-                logo.appendChild(span);
-            }
-        });
+        const logo = document.getElementById('logo');
+        logo.innerHTML = '';
+        for (let char of logoText) {
+            const span = document.createElement('span');
+            span.classList.add('letter');
+            span.textContent = char;
+            span.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+            logo.appendChild(span);
+        }
     }
 
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
     const carousel = document.getElementById('carousel');
+    let currentIndex = 0;
+    const panels = document.querySelectorAll('.panel');
 
-    let scrollSpeed = 1; 
-    let position = 0;
-
-    function animate() {
-        position += scrollSpeed;
-        if (position >= carousel.scrollWidth / 2) {
-            position = 0;
+    function goToNextPanel() {
+        currentIndex++;
+        if (currentIndex >= panels.length) {
+            currentIndex = 0;
         }
-        carousel.scrollLeft = position;
-        requestAnimationFrame(animate);
+        carousel.style.transform = `translateX(-${currentIndex * 100}vw)`;
     }
 
-    animate();
+    window.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        if (e.deltaY > 0) {
+            goToNextPanel();
+        } else {
+            currentIndex--;
+            if (currentIndex < 0) {
+                currentIndex = panels.length - 1;
+            }
+            carousel.style.transform = `translateX(-${currentIndex * 100}vw)`;
+        }
+    }, { passive: false });
 </script>
 
 </body>
