@@ -141,10 +141,10 @@
     const bottomMenu = document.getElementById('bottomMenu');
 
     window.addEventListener('wheel', function(e) {
-        if (e.deltaY < 0) {
-            bottomMenu.style.bottom = "0px";
-        } else {
+        if (e.deltaY > 0) {
             bottomMenu.style.bottom = "-60px";
+        } else {
+            bottomMenu.style.bottom = "0px";
         }
     });
 
@@ -156,9 +156,9 @@
     window.addEventListener('touchmove', function(e) {
         let touchEndY = e.touches[0].clientY;
         if (touchEndY > touchStartY + 10) {
-            bottomMenu.style.bottom = "0px";
-        } else if (touchEndY < touchStartY - 10) {
             bottomMenu.style.bottom = "-60px";
+        } else if (touchEndY < touchStartY - 10) {
+            bottomMenu.style.bottom = "0px";
         }
     });
 </script>
