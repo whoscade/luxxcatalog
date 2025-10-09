@@ -29,8 +29,9 @@
         display: flex;
         height: 100vh;
         width: 100vw;
-        overflow: hidden;
+        overflow-x: hidden;
         position: relative;
+        touch-action: pan-y;
     }
 
     .panel {
@@ -91,49 +92,60 @@
     setInterval(randomizeLogo, 117);
 
     const carousel = document.getElementById('carousel');
-    let isDown = false;
+
+    let isDragging = false;
     let startX;
-    let scrollLeft;
+    let scrollX = 0;
 
     carousel.addEventListener('mousedown', (e) => {
-        isDown = true;
-        startX = e.pageX - carousel.offsetLeft;
-        scrollLeft = carousel.scrollLeft;
-    });
-
-    carousel.addEventListener('mouseleave', () => {
-        isDown = false;
-    });
-
-    carousel.addEventListener('mouseup', () => {
-        isDown = false;
+        isDragging = true;
+        startX = e.pageX;
+        scrollX = carousel.scrollLeft;
     });
 
     carousel.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - carousel.offsetLeft;
-        const walk = (startX - x);
-        carousel.scrollLeft = scrollLeft + walk;
+        if (!isDragging) return;
+        const x = e.pageX;
+        carousel.scrollLeft = scrollX - (x - startX);
     });
 
-    // make carousel infinite
-    const panels = Array.from(carousel.children);
-    function clonePanels() {
-        panels.forEach(panel => {
-            const clone = panel.cloneNode(true);
-            carousel.appendChild(clone);
-        });
-    }
-    clonePanels();
+    carousel.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
 
-    function loop() {
+    carousel.addEventListener('mouseleave', () => {
+        isDragging = false;
+    });
+
+    carousel.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        startX = e.touches[0].pageX;
+        scrollX = carousel.scrollLeft;
+    });
+
+    carousel.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const x = e.touches[0].pageX;
+        carousel.scrollLeft = scrollX - (x - startX);
+    });
+
+    carousel.addEventListener('touchend', () => {
+        isDragging = false;
+    });
+
+    const panels = Array.from(carousel.children);
+    panels.forEach(panel => {
+        const clone = panel.cloneNode(true);
+        carousel.appendChild(clone);
+    });
+
+    function loopCarousel() {
         if (carousel.scrollLeft >= carousel.scrollWidth / 2) {
             carousel.scrollLeft = 0;
         }
-        requestAnimationFrame(loop);
+        requestAnimationFrame(loopCarousel);
     }
-    loop();
+    loopCarousel();
 </script>
 
 </body>
