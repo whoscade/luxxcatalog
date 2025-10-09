@@ -30,8 +30,8 @@
         justify-content: center;
         align-items: center;
         background-color: #ff0000;
+        overflow: hidden;
         position: relative;
-        font-family: monospace;
     }
 
     #logo {
@@ -59,6 +59,7 @@
         padding-left: 20px;
         z-index: 5;
         transition: bottom 0.15s ease-in-out;
+        font-family: monospace;
     }
 
     #bottomMenu ul {
@@ -77,6 +78,7 @@
     #bottomMenu ul li a.menu-link {
         text-decoration: none;
         color: white;
+        font-family: monospace;
         transition: border-bottom 0.2s ease-in-out;
         border-bottom: 1px solid transparent;
     }
@@ -89,21 +91,6 @@
         cursor: default;
         color: white;
         user-select: none;
-    }
-
-    @media (max-width: 600px) {
-        #logo {
-            font-size: clamp(2rem, 10vw, 6rem);
-        }
-
-        #bottomMenu {
-            height: 50px;
-            padding-left: 15px;
-        }
-
-        #bottomMenu ul li {
-            margin: 0 8px;
-        }
     }
 </style>
 </head>
@@ -122,6 +109,7 @@
 <script>
     const logoText = "LUXXCATALOG";
     const logo = document.getElementById('logo');
+
     const fonts = ['Experimento', 'GadetyperRegular', 'timesnewarial'];
 
     function randomizeLogo() {
@@ -138,13 +126,13 @@
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
-    const bottomMenu = document.getElementById('bottomMenu');
+    let bottomMenu = document.getElementById('bottomMenu');
 
     window.addEventListener('wheel', function(e) {
         if (e.deltaY > 0) {
-            bottomMenu.style.bottom = "-60px";
-        } else {
             bottomMenu.style.bottom = "0px";
+        } else {
+            bottomMenu.style.bottom = "-60px";
         }
     });
 
@@ -155,10 +143,10 @@
 
     window.addEventListener('touchmove', function(e) {
         let touchEndY = e.touches[0].clientY;
-        if (touchEndY > touchStartY + 10) {
-            bottomMenu.style.bottom = "-60px";
-        } else if (touchEndY < touchStartY - 10) {
+        if (touchEndY < touchStartY - 10) {
             bottomMenu.style.bottom = "0px";
+        } else if (touchEndY > touchStartY + 10) {
+            bottomMenu.style.bottom = "-60px";
         }
     });
 </script>
