@@ -21,18 +21,12 @@
     html, body {
         margin: 0;
         padding: 0;
-        overflow: hidden; /* hides scrollbar */
-        height: 100%;
+        height: 200%; /* allow scroll */
+        overflow-x: hidden;
     }
 
-    .scroll-wrapper {
-        height: 200vh; /* enough scroll space to trigger animation */
-        overflow-y: scroll;
-        scrollbar-width: none; /* firefox */
-    }
-
-    .scroll-wrapper::-webkit-scrollbar {
-        display: none; /* chrome/safari */
+    body {
+        font-family: sans-serif;
     }
 
     section {
@@ -44,7 +38,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        will-change: transform;
     }
 
     .red {
@@ -53,10 +46,14 @@
     }
 
     .black {
-        background-color: #000000;
-        color: white;
+        background-color: black;
         z-index: 2;
-        transform: translateY(100%);
+        mix-blend-mode: difference; /* here’s the magic */
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
     }
 
     #logo {
@@ -64,6 +61,8 @@
         line-height: 1;
         white-space: nowrap;
         display: flex;
+        position: relative;
+        z-index: 3;
     }
 
     .letter {
@@ -73,15 +72,13 @@
 </head>
 <body>
 
-<div class="scroll-wrapper">
-    <section class="red">
-        <div id="logo"></div>
-    </section>
+<section class="red">
+    <div id="logo"></div>
+</section>
 
-    <section class="black">
-        second section (placeholder)
-    </section>
-</div>
+<section class="black">
+    immersive section
+</section>
 
 <script>
     const logoText = "LUXXCATALOG";
@@ -102,14 +99,10 @@
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
-    // scroll effect
-    const scrollWrapper = document.querySelector('.scroll-wrapper');
-    scrollWrapper.addEventListener('scroll', () => {
-        const scrollY = scrollWrapper.scrollTop;
-        const docHeight = scrollWrapper.scrollHeight - window.innerHeight;
-        const progress = Math.min(scrollY / docHeight, 1);
+    window.addEventListener('scroll', () => {
         const blackSection = document.querySelector('.black');
-        blackSection.style.transform = `translateY(${(1 - progress) * 100}%)`;
+        const scrollTop = window.scrollY;
+        blackSection.style.transform = `translateY(${scrollTop}px)`;
     });
 </script>
 
