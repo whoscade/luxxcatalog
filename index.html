@@ -26,10 +26,17 @@
 
     body {
         display: flex;
+        flex-direction: column;
+        background-color: #ff0000;
+        overflow-x: hidden;
+    }
+
+    #landing {
+        height: 100vh;
+        display: flex;
         justify-content: center;
         align-items: center;
-        background-color: #ff0000;
-        overflow: hidden;
+        position: relative;
     }
 
     #logo {
@@ -42,16 +49,47 @@
     .letter {
         display: inline-block;
     }
+
+    /* new black menu bar */
+    #menu-bar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: black;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        display: none;
+        z-index: 1000;
+        font-family: Arial, sans-serif;
+    }
+
+    /* content section for scrolling */
+    #content {
+        height: 150vh;
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+    }
 </style>
 </head>
 <body>
 
-<div id="logo"></div>
+<div id="menu-bar">MENU BAR — links go here</div>
+
+<div id="landing">
+    <div id="logo"></div>
+</div>
+
+<div id="content">
+    scroll down to see the menu bar appear
+</div>
 
 <script>
     const logoText = "LUXXCATALOG";
     const logo = document.getElementById('logo');
-
     const fonts = ['Experimento', 'GadetyperRegular', 'timesnewarial'];
 
     function randomizeLogo() {
@@ -67,6 +105,22 @@
 
     randomizeLogo();
     setInterval(randomizeLogo, 117);
+
+    // scroll detection
+    let lastScroll = 0;
+    const menuBar = document.getElementById("menu-bar");
+
+    window.addEventListener("scroll", () => {
+        let currentScroll = window.pageYOffset;
+
+        if (currentScroll > lastScroll && currentScroll > 50) {
+            menuBar.style.display = "block";
+        } else {
+            menuBar.style.display = "none";
+        }
+
+        lastScroll = currentScroll;
+    });
 </script>
 
 </body>
