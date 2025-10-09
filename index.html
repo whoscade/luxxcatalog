@@ -26,29 +26,32 @@
     }
 
     body {
-        background: black;
+        background-color: black;
     }
 
-    .slide {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
+    .carousel {
         display: flex;
-        justify-content: center;
-        align-items: center;
+        flex-direction: row;
+        height: 100vh;
+        overflow-x: scroll;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+    }
+
+    .carousel::-webkit-scrollbar {
+        display: none;
+    }
+
+    .panel {
+        flex: 0 0 100vw;
+        height: 100vh;
     }
 
     #logo-panel {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         background-color: red;
-        z-index: 1;
-    }
-
-    #black-panel {
-        background-color: black;
-        z-index: 2;
-        transform: translateX(100%);
     }
 
     #logo {
@@ -65,11 +68,12 @@
 </head>
 <body>
 
-<div id="logo-panel" class="slide">
-    <div id="logo"></div>
+<div class="carousel" id="carousel">
+    <div class="panel" id="logo-panel">
+        <div id="logo"></div>
+    </div>
+    <div class="panel"></div>
 </div>
-
-<div id="black-panel" class="slide"></div>
 
 <script>
     const logoText = "LUXXCATALOG";
@@ -90,15 +94,11 @@
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
-    const blackPanel = document.getElementById('black-panel');
-    let scrollPosition = 0;
+    const carousel = document.getElementById('carousel');
 
     window.addEventListener('wheel', (e) => {
         e.preventDefault();
-        scrollPosition += e.deltaY;
-        scrollPosition = Math.max(0, scrollPosition);
-        const progress = Math.min(scrollPosition / window.innerHeight, 1);
-        blackPanel.style.transform = `translateX(${100 - (progress * 100)}%)`;
+        carousel.scrollLeft += e.deltaY;
     }, { passive: false });
 </script>
 
