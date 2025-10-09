@@ -71,9 +71,15 @@
     }
 
     #bottomMenu ul li {
-        margin: 0 15px;
+        margin: 0 10px;
         color: white;
         cursor: pointer;
+    }
+
+    .separator {
+        cursor: default;
+        color: white;
+        user-select: none;
     }
 </style>
 </head>
@@ -84,6 +90,7 @@
 <div id="bottomMenu">
     <ul>
         <li>BROWSE</li>
+        <li class="separator">⎯⎯⎯⎯⎯</li>
         <li>MAILING LIST</li>
     </ul>
 </div>
@@ -109,12 +116,13 @@
     setInterval(randomizeLogo, 117);
 
     let bottomMenu = document.getElementById('bottomMenu');
+    let lastScroll = 0;
 
     window.addEventListener('wheel', function(e) {
-        if (e.deltaY < 0) {
-            bottomMenu.style.bottom = "0px";
-        } else {
+        if (e.deltaY > 0) {
             bottomMenu.style.bottom = "-60px";
+        } else {
+            bottomMenu.style.bottom = "0px";
         }
     });
 
@@ -125,10 +133,10 @@
 
     window.addEventListener('touchmove', function(e) {
         let touchEndY = e.touches[0].clientY;
-        if (touchEndY > touchStartY + 10) {
-            bottomMenu.style.bottom = "0px";
-        } else if (touchEndY < touchStartY - 10) {
+        if (touchEndY < touchStartY - 10) {
             bottomMenu.style.bottom = "-60px";
+        } else if (touchEndY > touchStartY + 10) {
+            bottomMenu.style.bottom = "0px";
         }
     });
 </script>
