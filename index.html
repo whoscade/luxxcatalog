@@ -5,43 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LUXXCATALOG</title>
 <style>
+    @font-face {
+        font-family: 'Experimento';
+        src: url('fonts/Experimento.ttf') format('truetype');
+    }
+    @font-face {
+        font-family: 'GadetyperRegular';
+        src: url('fonts/GadetyperRegular.otf') format('opentype');
+    }
+    @font-face {
+        font-family: 'timesnewarial';
+        src: url('fonts/timesnewarial.ttf') format('truetype');
+    }
+
     html, body {
         margin: 0;
         padding: 0;
         height: 100%;
-        overflow-y: scroll;
-        overscroll-behavior: none;
-        scroll-behavior: auto;
-        -webkit-overflow-scrolling: auto;
+        overflow: hidden;
     }
 
     body {
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
+        background-color: black;
     }
 
     .carousel {
         display: flex;
-        flex-direction: column;
-        height: 200vh;
-        overflow-y: scroll;
-        scroll-snap-type: y mandatory;
+        flex-direction: row;
+        height: 100vh;
+        overflow-x: scroll;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+    }
+
+    .carousel::-webkit-scrollbar {
+        display: none;
     }
 
     .panel {
+        flex: 0 0 100vw;
         height: 100vh;
-        scroll-snap-align: start;
     }
 
-    #panel1 {
-        background-color: #ff0000;
+    #logo-panel {
         display: flex;
         justify-content: center;
         align-items: center;
+        background-color: red;
     }
 
-    #panel1 #logo {
+    #logo {
         font-size: clamp(2.5rem, 12vw, 8rem);
         line-height: 1;
         white-space: nowrap;
@@ -51,35 +64,36 @@
     .letter {
         display: inline-block;
     }
-
-    #panel2 {
-        background-color: #000;
-    }
 </style>
 </head>
 <body>
 
 <div class="carousel" id="carousel">
-    <div class="panel" id="panel1">
+    <div class="panel" id="logo-panel">
         <div id="logo"></div>
     </div>
-    <div class="panel" id="panel2"></div>
+    <div class="panel"></div>
+    <div class="panel" id="logo-panel-clone">
+        <div id="logo"></div>
+    </div>
+    <div class="panel"></div>
 </div>
 
 <script>
     const logoText = "LUXXCATALOG";
-    const logo = document.getElementById('logo');
     const fonts = ['Experimento', 'GadetyperRegular', 'timesnewarial'];
 
     function randomizeLogo() {
-        logo.innerHTML = '';
-        for (let char of logoText) {
-            const span = document.createElement('span');
-            span.classList.add('letter');
-            span.textContent = char;
-            span.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
-            logo.appendChild(span);
-        }
+        document.querySelectorAll('#logo').forEach(logo => {
+            logo.innerHTML = '';
+            for (let char of logoText) {
+                const span = document.createElement('span');
+                span.classList.add('letter');
+                span.textContent = char;
+                span.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+                logo.appendChild(span);
+            }
+        });
     }
 
     randomizeLogo();
@@ -87,29 +101,16 @@
 
     const carousel = document.getElementById('carousel');
 
-    carousel.addEventListener('wheel', function(e) {
-        window.scrollBy(0, e.deltaY * 2);
+    window.addEventListener('wheel', (e) => {
         e.preventDefault();
-    }, { passive: false });
-
-    let touchStart = 0;
-    carousel.addEventListener('touchstart', function(e) {
-        touchStart = e.touches[0].clientY;
-    }, { passive: true });
-
-    carousel.addEventListener('touchmove', function(e) {
-        let touchEnd = e.touches[0].clientY;
-        let delta = touchStart - touchEnd;
-        window.scrollBy(0, delta * 2);
-        touchStart = touchEnd;
-        e.preventDefault();
-    }, { passive: false });
-
-    window.addEventListener('scroll', function() {
-        if (window.scrollY >= window.innerHeight) {
-            window.scrollTo(0, 0);
+        carousel.scrollLeft += e.deltaY * 2; // speed multiplier
+        if (carousel.scrollLeft >= carousel.scrollWidth / 2) {
+            carousel.scrollLeft = 0;
         }
-    });
+        if (carousel.scrollLeft < 0) {
+            carousel.scrollLeft = carousel.scrollWidth / 2;
+        }
+    }, { passive: false });
 </script>
 
 </body>
