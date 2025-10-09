@@ -72,8 +72,15 @@
         width: 100%;
         height: 100%;
         pointer-events: none;
-        background-image: radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px);
-        background-size: 3px 3px;
+        background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+        background-size: 2px 2px;
+        opacity: 0.6;
+        animation: grainAnim 0.3s infinite;
+    }
+
+    @keyframes grainAnim {
+        0% {background-position: 0 0;}
+        100% {background-position: 100% 100%;}
     }
 
     #bottomMenu ul {
