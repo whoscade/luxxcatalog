@@ -22,6 +22,7 @@
         margin: 0;
         padding: 0;
         height: 100%;
+        overflow: hidden;
     }
 
     body {
@@ -30,7 +31,7 @@
         align-items: center;
         background-color: #ff0000;
         overflow: hidden;
-        touch-action: none;
+        position: relative;
     }
 
     #logo {
@@ -38,6 +39,8 @@
         line-height: 1;
         white-space: nowrap;
         display: flex;
+        z-index: 10;
+        position: relative;
     }
 
     .letter {
@@ -46,52 +49,48 @@
 
     #bottomMenu {
         position: fixed;
-        bottom: -50px;
+        bottom: -60px;
         left: 0;
         width: 100%;
+        height: 60px;
         background: black;
         display: flex;
         align-items: center;
-        padding: 10px;
+        padding-left: 20px;
+        z-index: 5;
+        transition: bottom 0.15s ease-in-out;
         font-family: monospace;
-        z-index: 9999;
-        overflow: hidden;
     }
 
-    #bottomMenu::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        background-image: radial-gradient(circle, rgba(128, 128, 128, 0.4) 1px, transparent 1px);
-        background-size: 2px 2px;
-        opacity: 1;
-        z-index: 1;
+    #bottomMenu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
     }
 
-    #bottomMenu > * {
-        position: relative;
-        z-index: 2;
-        margin-left: 20px;
-    }
-
-    .menu-link {
+    #bottomMenu ul li {
+        margin: 0 10px;
         color: white;
+    }
+
+    #bottomMenu ul li a.menu-link {
         text-decoration: none;
+        color: white;
+        font-family: monospace;
+        transition: border-bottom 0.2s ease-in-out;
         border-bottom: 1px solid transparent;
     }
 
-    .menu-link:hover {
+    #bottomMenu ul li a.menu-link:hover {
         border-bottom: 1px solid white;
     }
 
-    .divider {
-        margin-left: 10px;
-        margin-right: 10px;
+    .separator {
+        cursor: default;
         color: white;
+        user-select: none;
     }
 </style>
 </head>
@@ -100,9 +99,11 @@
 <div id="logo"></div>
 
 <div id="bottomMenu">
-    <a href="#" class="menu-link">BROWSE</a>
-    <span class="divider">⎯⎯⎯⎯⎯</span>
-    <a href="#" class="menu-link">MAILING LIST</a>
+    <ul>
+        <li><a href="#" class="menu-link">BROWSE</a></li>
+        <li class="separator">⎯⎯⎯⎯⎯</li>
+        <li><a href="#" class="menu-link">MAILING LIST</a></li>
+    </ul>
 </div>
 
 <script>
@@ -125,21 +126,28 @@
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
-    let lastTouchY = 0;
-    const bottomMenu = document.getElementById('bottomMenu');
+    let bottomMenu = document.getElementById('bottomMenu');
 
-    window.addEventListener('touchstart', (e) => {
-        lastTouchY = e.touches[0].clientY;
+    window.addEventListener('wheel', function(e) {
+        if (e.deltaY > 0) {
+            bottomMenu.style.bottom = "0px";
+        } else {
+            bottomMenu.style.bottom = "-60px";
+        }
     });
 
-    window.addEventListener('touchmove', (e) => {
-        const currentY = e.touches[0].clientY;
-        if (currentY < lastTouchY - 5) {
-            bottomMenu.style.bottom = "0";
-        } else if (currentY > lastTouchY + 5) {
-            bottomMenu.style.bottom = "-50px";
+    let touchStartY = 0;
+    window.addEventListener('touchstart', function(e) {
+        touchStartY = e.touches[0].clientY;
+    });
+
+    window.addEventListener('touchmove', function(e) {
+        let touchEndY = e.touches[0].clientY;
+        if (touchEndY < touchStartY - 10) {
+            bottomMenu.style.bottom = "0px";
+        } else if (touchEndY > touchStartY + 10) {
+            bottomMenu.style.bottom = "-60px";
         }
-        lastTouchY = currentY;
     });
 </script>
 
