@@ -26,7 +26,7 @@
     }
 
     body {
-        background-color: black;
+        background: black;
     }
 
     .slide {
@@ -49,7 +49,6 @@
         background-color: black;
         z-index: 2;
         transform: translateX(100%);
-        transition: transform 0.8s ease;
     }
 
     #logo {
@@ -91,13 +90,15 @@
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
-    let panelVisible = false;
     const blackPanel = document.getElementById('black-panel');
+    let scrollPosition = 0;
 
     window.addEventListener('wheel', (e) => {
         e.preventDefault();
-        panelVisible = e.deltaY > 0 ? true : false;
-        blackPanel.style.transform = panelVisible ? 'translateX(0)' : 'translateX(100%)';
+        scrollPosition += e.deltaY;
+        scrollPosition = Math.max(0, scrollPosition);
+        const progress = Math.min(scrollPosition / window.innerHeight, 1);
+        blackPanel.style.transform = `translateX(${100 - (progress * 100)}%)`;
     }, { passive: false });
 </script>
 
