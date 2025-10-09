@@ -22,7 +22,6 @@
         margin: 0;
         padding: 0;
         height: 100%;
-        overflow: hidden;
     }
 
     body {
@@ -31,7 +30,6 @@
         align-items: center;
         background-color: #ff0000;
         overflow: hidden;
-        position: relative;
     }
 
     #logo {
@@ -39,8 +37,6 @@
         line-height: 1;
         white-space: nowrap;
         display: flex;
-        z-index: 10;
-        position: relative;
     }
 
     .letter {
@@ -49,18 +45,15 @@
 
     #bottomMenu {
         position: fixed;
-        bottom: -60px;
+        bottom: -50px;
         left: 0;
         width: 100%;
-        height: 60px;
-        background-color: black;
+        background: black;
         display: flex;
         align-items: center;
-        padding-left: 20px;
-        z-index: 5;
-        transition: bottom 0.15s ease-in-out;
+        padding: 10px;
         font-family: monospace;
-        color: white;
+        z-index: 9999;
         overflow: hidden;
     }
 
@@ -72,46 +65,32 @@
         width: 100%;
         height: 100%;
         pointer-events: none;
-        background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+        background-image: radial-gradient(circle, rgba(128, 128, 128, 0.3) 1px, transparent 1px);
         background-size: 2px 2px;
-        opacity: 0.6;
-        animation: grainAnim 0.3s infinite;
+        opacity: 1;
+        z-index: 1;
     }
 
-    @keyframes grainAnim {
-        0% {background-position: 0 0;}
-        100% {background-position: 100% 100%;}
+    #bottomMenu > * {
+        position: relative;
+        z-index: 2;
+        margin-left: 20px;
     }
 
-    #bottomMenu ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-    }
-
-    #bottomMenu ul li {
-        margin: 0 10px;
+    .menu-link {
         color: white;
-    }
-
-    #bottomMenu ul li a.menu-link {
         text-decoration: none;
-        color: white;
-        font-family: monospace;
-        transition: border-bottom 0.2s ease-in-out;
         border-bottom: 1px solid transparent;
     }
 
-    #bottomMenu ul li a.menu-link:hover {
+    .menu-link:hover {
         border-bottom: 1px solid white;
     }
 
-    .separator {
-        cursor: default;
+    .divider {
+        margin-left: 10px;
+        margin-right: 10px;
         color: white;
-        user-select: none;
     }
 </style>
 </head>
@@ -120,11 +99,9 @@
 <div id="logo"></div>
 
 <div id="bottomMenu">
-    <ul>
-        <li><a href="#" class="menu-link">BROWSE</a></li>
-        <li class="separator">⎯⎯⎯⎯⎯</li>
-        <li><a href="#" class="menu-link">MAILING LIST</a></li>
-    </ul>
+    <a href="#" class="menu-link">BROWSE</a>
+    <span class="divider">⎯⎯⎯⎯⎯</span>
+    <a href="#" class="menu-link">MAILING LIST</a>
 </div>
 
 <script>
@@ -147,28 +124,16 @@
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
-    let bottomMenu = document.getElementById('bottomMenu');
+    let lastScrollY = window.scrollY;
+    const bottomMenu = document.getElementById('bottomMenu');
 
-    window.addEventListener('wheel', function(e) {
-        if (e.deltaY > 0) {
-            bottomMenu.style.bottom = "0px";
+    window.addEventListener('scroll', () => {
+        if (window.scrollY < lastScrollY) {
+            bottomMenu.style.bottom = "0";
         } else {
-            bottomMenu.style.bottom = "-60px";
+            bottomMenu.style.bottom = "-50px";
         }
-    });
-
-    let touchStartY = 0;
-    window.addEventListener('touchstart', function(e) {
-        touchStartY = e.touches[0].clientY;
-    });
-
-    window.addEventListener('touchmove', function(e) {
-        let touchEndY = e.touches[0].clientY;
-        if (touchEndY < touchStartY - 10) {
-            bottomMenu.style.bottom = "0px";
-        } else if (touchEndY > touchStartY + 10) {
-            bottomMenu.style.bottom = "-60px";
-        }
+        lastScrollY = window.scrollY;
     });
 </script>
 
