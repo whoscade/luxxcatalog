@@ -48,19 +48,19 @@
     }
 
     #bottomMenu {
-    position: fixed;
-    bottom: -60px;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background: linear-gradient(to bottom, rgba(255,0,0,0) 0%, black 85%);
-    display: flex;
-    align-items: center;
-    padding-left: 20px;
-    z-index: 5;
-    transition: bottom 0.15s ease-in-out;
-    font-family: monospace;
-}
+        position: fixed;
+        bottom: -60px;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: black;
+        display: flex;
+        align-items: center;
+        padding-left: 20px;
+        z-index: 5;
+        transition: bottom 0.15s ease-in-out;
+        font-family: monospace;
+    }
 
     #bottomMenu ul {
         list-style: none;
@@ -109,6 +109,7 @@
 <script>
     const logoText = "LUXXCATALOG";
     const logo = document.getElementById('logo');
+
     const fonts = ['Experimento', 'GadetyperRegular', 'timesnewarial'];
 
     function randomizeLogo() {
@@ -125,7 +126,7 @@
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
-    const bottomMenu = document.getElementById('bottomMenu');
+    let bottomMenu = document.getElementById('bottomMenu');
 
     window.addEventListener('wheel', function(e) {
         if (e.deltaY > 0) {
