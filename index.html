@@ -22,7 +22,7 @@
         margin: 0;
         padding: 0;
         height: 100%;
-        overflow: hidden;
+        font-family: monospace;
     }
 
     body {
@@ -30,7 +30,7 @@
         justify-content: center;
         align-items: center;
         background-color: #ff0000;
-        font-family: monospace;
+        overflow: hidden;
     }
 
     #logo {
@@ -49,67 +49,70 @@
         bottom: -60px;
         left: 0;
         width: 100%;
-        background-color: black;
-        color: white;
-        font-family: monospace;
+        height: 60px;
+        background: black;
         display: flex;
         align-items: center;
-        padding: 10px 20px;
-        font-size: 1rem;
-        gap: 10px;
+        padding-left: 20px;
+        gap: 20px;
+        box-sizing: border-box;
         z-index: 9999;
         transition: bottom 0.3s ease;
+        font-family: monospace;
     }
 
-    .menu-button {
-        cursor: pointer;
-        text-decoration: none;
+    .menu-item {
         color: white;
+        text-decoration: none;
+        cursor: pointer;
         border-bottom: 1px solid transparent;
+        padding-bottom: 2px;
     }
 
-    .menu-button:hover {
+    .menu-item:hover {
         border-bottom: 1px solid white;
     }
 
-    #menu-separator {
-        flex-grow: 1;
-        border-bottom: 1px solid white;
-        margin: 0 10px;
+    .menu-separator {
+        color: white;
+        user-select: none;
     }
 
     #popup {
+        display: none;
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         background: black;
         color: white;
-        padding: 30px;
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
+        padding: 20px;
+        border: 2px solid red;
         font-family: monospace;
-        border: 3px solid red;
+        z-index: 10000;
     }
 
     #popup input {
-        padding: 8px;
-        width: 200px;
-        border: none;
-        font-family: monospace;
+        padding: 5px;
+        margin-top: 10px;
+        border: 1px solid white;
+        background: black;
+        color: white;
     }
 
     #popup button {
-        padding: 8px 12px;
+        padding: 5px 10px;
+        margin-top: 10px;
         background: red;
-        border: none;
         color: white;
+        border: none;
         cursor: pointer;
-        font-family: monospace;
     }
 
+    #popup button:hover {
+        background: white;
+        color: red;
+    }
 </style>
 </head>
 <body>
@@ -117,15 +120,16 @@
 <div id="logo"></div>
 
 <div id="bottomMenu">
-    <a class="menu-button" href="#">BROWSE</a>
-    <div id="menu-separator"></div>
-    <a class="menu-button" id="mailingListBtn">MAILING LIST</a>
+    <div class="menu-item" id="browseBtn">BROWSE</div>
+    <div class="menu-separator">⎯⎯⎯⎯⎯</div>
+    <div class="menu-item" id="mailingBtn">MAILING LIST</div>
 </div>
 
 <div id="popup">
-    <div>TYPE YOUR EMAIL HERE</div>
+    <div>Type your email here</div>
     <input type="text" placeholder="email@example.com">
-    <button id="closePopup">CLOSE</button>
+    <br>
+    <button id="closePopup">Close</button>
 </div>
 
 <script>
@@ -171,12 +175,12 @@
         }
     });
 
-    const mailingListBtn = document.getElementById('mailingListBtn');
+    const mailingBtn = document.getElementById('mailingBtn');
     const popup = document.getElementById('popup');
     const closePopup = document.getElementById('closePopup');
 
-    mailingListBtn.addEventListener('click', () => {
-        popup.style.display = 'flex';
+    mailingBtn.addEventListener('click', () => {
+        popup.style.display = 'block';
     });
 
     closePopup.addEventListener('click', () => {
