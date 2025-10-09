@@ -73,7 +73,18 @@
     #bottomMenu ul li {
         margin: 0 10px;
         color: white;
-        cursor: pointer;
+    }
+
+    #bottomMenu ul li a.menu-link {
+        text-decoration: none;
+        color: white;
+        font-family: monospace;
+        transition: border-bottom 0.2s ease-in-out;
+        border-bottom: 2px solid transparent;
+    }
+
+    #bottomMenu ul li a.menu-link:hover {
+        border-bottom: 2px solid white;
     }
 
     .separator {
@@ -89,9 +100,9 @@
 
 <div id="bottomMenu">
     <ul>
-        <li>BROWSE</li>
+        <li><a href="#" class="menu-link">BROWSE</a></li>
         <li class="separator">⎯⎯⎯⎯⎯</li>
-        <li>MAILING LIST</li>
+        <li><a href="#" class="menu-link">MAILING LIST</a></li>
     </ul>
 </div>
 
