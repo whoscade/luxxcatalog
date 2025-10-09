@@ -112,16 +112,20 @@
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
-    let lastScrollY = window.scrollY;
+    let touchStartY = 0;
     const bottomMenu = document.getElementById('bottomMenu');
 
-    window.addEventListener('scroll', () => {
-        if (window.scrollY < lastScrollY) {
+    window.addEventListener('touchstart', e => {
+        touchStartY = e.touches[0].clientY;
+    });
+
+    window.addEventListener('touchmove', e => {
+        let touchEndY = e.touches[0].clientY;
+        if (touchStartY < touchEndY) {
             bottomMenu.style.bottom = '0';
         } else {
             bottomMenu.style.bottom = '-60px';
         }
-        lastScrollY = window.scrollY;
     });
 </script>
 
