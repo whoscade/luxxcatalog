@@ -22,6 +22,7 @@
         margin: 0;
         padding: 0;
         height: 100%;
+        overflow: hidden;
     }
 
     body {
@@ -30,6 +31,7 @@
         align-items: center;
         background-color: #ff0000;
         overflow: hidden;
+        position: relative;
     }
 
     #logo {
@@ -37,16 +39,60 @@
         line-height: 1;
         white-space: nowrap;
         display: flex;
+        z-index: 10;
+        position: relative;
     }
 
     .letter {
         display: inline-block;
+    }
+
+    /* bottom menu bar */
+    #bottomMenu {
+        position: fixed;
+        bottom: -60px; /* hidden below the page */
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 5;
+        transition: bottom 0.3s ease-in-out;
+    }
+
+    #bottomMenu.show {
+        bottom: 0; /* slide up into view */
+    }
+
+    #bottomMenu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+
+    #bottomMenu ul li {
+        margin: 0 15px;
+        color: white;
+        font-family: sans-serif;
+        cursor: pointer;
     }
 </style>
 </head>
 <body>
 
 <div id="logo"></div>
+
+<div id="bottomMenu">
+    <ul>
+        <li>Home</li>
+        <li>About</li>
+        <li>Portfolio</li>
+        <li>Contact</li>
+    </ul>
+</div>
 
 <script>
     const logoText = "LUXXCATALOG";
@@ -67,6 +113,46 @@
 
     randomizeLogo();
     setInterval(randomizeLogo, 117);
+
+    // MENU SHOW/HIDE BASED ON SCROLL DIRECTION
+    let lastScrollY = 0;
+    const bottomMenu = document.getElementById('bottomMenu');
+
+    function onScroll(e) {
+        const currentScrollY = window.scrollY || lastScrollY;
+        if (currentScrollY < lastScrollY) {
+            // scrolling up
+            bottomMenu.classList.add('show');
+        } else {
+            // scrolling down
+            bottomMenu.classList.remove('show');
+        }
+        lastScrollY = currentScrollY;
+    }
+
+    // DESKTOP: detect wheel direction
+    window.addEventListener('wheel', function(e) {
+        if (e.deltaY < 0) {
+            bottomMenu.classList.add('show');
+        } else {
+            bottomMenu.classList.remove('show');
+        }
+    });
+
+    // MOBILE: detect swipe up/down
+    let touchStartY = 0;
+    window.addEventListener('touchstart', function(e) {
+        touchStartY = e.touches[0].clientY;
+    });
+
+    window.addEventListener('touchmove', function(e) {
+        let touchEndY = e.touches[0].clientY;
+        if (touchEndY > touchStartY + 10) {
+            bottomMenu.classList.remove('show'); // swipe down
+        } else if (touchEndY < touchStartY - 10) {
+            bottomMenu.classList.add('show'); // swipe up
+        }
+    });
 </script>
 
 </body>
