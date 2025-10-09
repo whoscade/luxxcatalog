@@ -22,14 +22,32 @@
         margin: 0;
         padding: 0;
         height: 100%;
+        scroll-snap-type: y mandatory;
+        overflow-y: scroll;
     }
 
-    body {
+    section {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        width: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
+        scroll-snap-align: start;
+    }
+
+    /* first section (red) */
+    .red {
         background-color: #ff0000;
-        overflow: hidden;
+    }
+
+    /* second section (black) */
+    .black {
+        background-color: #000000;
+        color: white;
+        font-family: sans-serif;
+        font-size: 2rem;
     }
 
     #logo {
@@ -46,7 +64,13 @@
 </head>
 <body>
 
-<div id="logo"></div>
+<section class="red">
+    <div id="logo"></div>
+</section>
+
+<section class="black">
+    second section (placeholder)
+</section>
 
 <script>
     const logoText = "LUXXCATALOG";
