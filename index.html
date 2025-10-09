@@ -75,12 +75,6 @@
         color: white;
         cursor: pointer;
     }
-
-    #bottomMenu ul li.separator {
-        border-left: 2px solid white;
-        height: 20px;
-        margin: 0 15px;
-    }
 </style>
 </head>
 <body>
@@ -90,7 +84,6 @@
 <div id="bottomMenu">
     <ul>
         <li>BROWSE</li>
-        <li class="separator"></li>
         <li>MAILING LIST</li>
     </ul>
 </div>
@@ -118,10 +111,10 @@
     let bottomMenu = document.getElementById('bottomMenu');
 
     window.addEventListener('wheel', function(e) {
-        if (e.deltaY > 0) {
-            bottomMenu.classList.add('show');
+        if (e.deltaY < 0) {
+            bottomMenu.style.bottom = "0px";
         } else {
-            bottomMenu.classList.remove('show');
+            bottomMenu.style.bottom = "-60px";
         }
     });
 
@@ -132,10 +125,10 @@
 
     window.addEventListener('touchmove', function(e) {
         let touchEndY = e.touches[0].clientY;
-        if (touchEndY < touchStartY - 10) {
-            bottomMenu.classList.remove('show');
-        } else if (touchEndY > touchStartY + 10) {
-            bottomMenu.classList.add('show');
+        if (touchEndY > touchStartY + 10) {
+            bottomMenu.style.bottom = "0px";
+        } else if (touchEndY < touchStartY - 10) {
+            bottomMenu.style.bottom = "-60px";
         }
     });
 </script>
