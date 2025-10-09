@@ -55,14 +55,12 @@
         height: 60px;
         background: black;
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
+        padding-left: 20px;
         z-index: 5;
         transition: bottom 0.15s ease-in-out;
-    }
-
-    #bottomMenu.show {
-        bottom: 0;
+        font-family: monospace;
     }
 
     #bottomMenu ul {
@@ -70,13 +68,19 @@
         margin: 0;
         padding: 0;
         display: flex;
+        align-items: center;
     }
 
     #bottomMenu ul li {
         margin: 0 15px;
         color: white;
-        font-family: sans-serif;
         cursor: pointer;
+    }
+
+    #separator {
+        flex-grow: 1;
+        height: 1px;
+        background: white;
     }
 </style>
 </head>
@@ -86,10 +90,9 @@
 
 <div id="bottomMenu">
     <ul>
-        <li>Home</li>
-        <li>About</li>
-        <li>Portfolio</li>
-        <li>Contact</li>
+        <li>BROWSE</li>
+        <li id="separator"></li>
+        <li>MAILING LIST</li>
     </ul>
 </div>
 
@@ -113,8 +116,7 @@
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
-    let lastScrollY = 0;
-    const bottomMenu = document.getElementById('bottomMenu');
+    let bottomMenu = document.getElementById('bottomMenu');
 
     window.addEventListener('wheel', function(e) {
         if (e.deltaY > 0) {
