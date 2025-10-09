@@ -26,20 +26,20 @@
     }
 
     .carousel {
+        display: flex;
         height: 100vh;
         width: 100vw;
-        overflow-y: scroll;
-        scroll-snap-type: y mandatory;
-        -webkit-overflow-scrolling: touch;
+        overflow: hidden;
+        position: relative;
     }
 
     .panel {
-        scroll-snap-align: start;
+        min-width: 100vw;
         height: 100vh;
-        width: 100vw;
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-shrink: 0;
     }
 
     #logo-panel {
@@ -69,7 +69,6 @@
         <div id="logo"></div>
     </div>
     <div class="panel" id="blank-panel"></div>
-    <div class="panel" id="logo-panel-clone"></div>
 </div>
 
 <script>
@@ -92,14 +91,49 @@
     setInterval(randomizeLogo, 117);
 
     const carousel = document.getElementById('carousel');
-    const panels = carousel.children;
-    let panelCount = panels.length;
+    let isDown = false;
+    let startX;
+    let scrollLeft;
 
-    carousel.addEventListener('scroll', () => {
-        if (carousel.scrollTop + carousel.clientHeight >= carousel.scrollHeight) {
-            carousel.scrollTop = 0;
-        }
+    carousel.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startX = e.pageX - carousel.offsetLeft;
+        scrollLeft = carousel.scrollLeft;
     });
+
+    carousel.addEventListener('mouseleave', () => {
+        isDown = false;
+    });
+
+    carousel.addEventListener('mouseup', () => {
+        isDown = false;
+    });
+
+    carousel.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - carousel.offsetLeft;
+        const walk = (startX - x);
+        carousel.scrollLeft = scrollLeft + walk;
+    });
+
+    // make carousel infinite
+    const panels = Array.from(carousel.children);
+    function clonePanels() {
+        panels.forEach(panel => {
+            const clone = panel.cloneNode(true);
+            carousel.appendChild(clone);
+        });
+    }
+    clonePanels();
+
+    function loop() {
+        if (carousel.scrollLeft >= carousel.scrollWidth / 2) {
+            carousel.scrollLeft = 0;
+        }
+        requestAnimationFrame(loop);
+    }
+    loop();
 </script>
 
 </body>
