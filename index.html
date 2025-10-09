@@ -30,8 +30,6 @@
         justify-content: center;
         align-items: center;
         background-color: #ff0000;
-        overflow: hidden;
-        position: relative;
         font-family: monospace;
     }
 
@@ -40,8 +38,6 @@
         line-height: 1;
         white-space: nowrap;
         display: flex;
-        z-index: 10;
-        position: relative;
     }
 
     .letter {
@@ -53,48 +49,36 @@
         bottom: -60px;
         left: 0;
         width: 100%;
-        height: 60px;
-        background: black;
-        display: flex;
-        align-items: center;
-        padding-left: 20px;
-        z-index: 5;
-        transition: bottom 0.15s ease-in-out;
-    }
-
-    #bottomMenu ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-    }
-
-    #bottomMenu ul li {
-        margin: 0 10px;
-        color: white;
-    }
-
-    #bottomMenu ul li a.menu-link {
-        text-decoration: none;
+        background-color: black;
         color: white;
         font-family: monospace;
-        transition: border-bottom 0.2s ease-in-out;
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+        font-size: 1rem;
+        gap: 10px;
+        z-index: 9999;
+        transition: bottom 0.3s ease;
+    }
+
+    .menu-button {
+        cursor: pointer;
+        text-decoration: none;
+        color: white;
         border-bottom: 1px solid transparent;
     }
 
-    #bottomMenu ul li a.menu-link:hover {
+    .menu-button:hover {
         border-bottom: 1px solid white;
     }
 
-    .separator {
-        cursor: default;
-        color: white;
-        user-select: none;
+    #menu-separator {
+        flex-grow: 1;
+        border-bottom: 1px solid white;
+        margin: 0 10px;
     }
 
-    #mailingPopup {
-        display: none;
+    #popup {
         position: fixed;
         top: 50%;
         left: 50%;
@@ -102,52 +86,30 @@
         background: black;
         color: white;
         padding: 30px;
-        border: 4px solid red;
-        z-index: 20;
-        width: 300px;
-        text-align: center;
-        animation: popupAnim 0.3s ease forwards;
-    }
-
-    @keyframes popupAnim {
-        from { transform: translate(-50%, -60%) scale(0.8); opacity: 0; }
-        to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    }
-
-    #mailingPopup input[type="email"] {
-        width: 100%;
-        padding: 10px;
-        border: 2px solid red;
-        background: black;
-        color: white;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
         font-family: monospace;
-        margin-bottom: 15px;
+        border: 3px solid red;
     }
 
-    #mailingPopup button {
-        padding: 10px 20px;
+    #popup input {
+        padding: 8px;
+        width: 200px;
+        border: none;
+        font-family: monospace;
+    }
+
+    #popup button {
+        padding: 8px 12px;
         background: red;
         border: none;
         color: white;
+        cursor: pointer;
         font-family: monospace;
-        cursor: pointer;
-        font-weight: bold;
     }
 
-    #mailingPopup button:hover {
-        background: white;
-        color: red;
-        border: 2px solid red;
-    }
-
-    #mailingPopup .close-btn {
-        position: absolute;
-        top: 5px;
-        right: 10px;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 18px;
-    }
 </style>
 </head>
 <body>
@@ -155,18 +117,15 @@
 <div id="logo"></div>
 
 <div id="bottomMenu">
-    <ul>
-        <li><a href="#" class="menu-link">BROWSE</a></li>
-        <li class="separator">⎯⎯⎯⎯⎯</li>
-        <li><a href="#" class="menu-link" id="mailingBtn">MAILING LIST</a></li>
-    </ul>
+    <a class="menu-button" href="#">BROWSE</a>
+    <div id="menu-separator"></div>
+    <a class="menu-button" id="mailingListBtn">MAILING LIST</a>
 </div>
 
-<div id="mailingPopup">
-    <span class="close-btn" id="closePopup">×</span>
-    <h2>JOIN OUR MAILING LIST</h2>
-    <input type="email" placeholder="Type your email here" />
-    <button id="submitEmail">SUBMIT</button>
+<div id="popup">
+    <div>TYPE YOUR EMAIL HERE</div>
+    <input type="text" placeholder="email@example.com">
+    <button id="closePopup">CLOSE</button>
 </div>
 
 <script>
@@ -189,16 +148,16 @@
     setInterval(randomizeLogo, 117);
 
     let bottomMenu = document.getElementById('bottomMenu');
+    let touchStartY = 0;
 
     window.addEventListener('wheel', function(e) {
         if (e.deltaY < 0) {
-            bottomMenu.style.bottom = "0px";
-        } else {
             bottomMenu.style.bottom = "-60px";
+        } else {
+            bottomMenu.style.bottom = "0px";
         }
     });
 
-    let touchStartY = 0;
     window.addEventListener('touchstart', function(e) {
         touchStartY = e.touches[0].clientY;
     });
@@ -206,28 +165,22 @@
     window.addEventListener('touchmove', function(e) {
         let touchEndY = e.touches[0].clientY;
         if (touchEndY > touchStartY + 10) {
-            bottomMenu.style.bottom = "0px";
-        } else if (touchEndY < touchStartY - 10) {
             bottomMenu.style.bottom = "-60px";
+        } else if (touchEndY < touchStartY - 10) {
+            bottomMenu.style.bottom = "0px";
         }
     });
 
-    const mailingBtn = document.getElementById('mailingBtn');
-    const mailingPopup = document.getElementById('mailingPopup');
+    const mailingListBtn = document.getElementById('mailingListBtn');
+    const popup = document.getElementById('popup');
     const closePopup = document.getElementById('closePopup');
 
-    mailingBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        mailingPopup.style.display = "block";
+    mailingListBtn.addEventListener('click', () => {
+        popup.style.display = 'flex';
     });
 
-    closePopup.addEventListener('click', function() {
-        mailingPopup.style.display = "none";
-    });
-
-    document.getElementById('submitEmail').addEventListener('click', function() {
-        alert("this is just a placeholder form for now");
-        mailingPopup.style.display = "none";
+    closePopup.addEventListener('click', () => {
+        popup.style.display = 'none';
     });
 </script>
 
