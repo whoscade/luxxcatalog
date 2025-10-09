@@ -32,6 +32,7 @@
         background-color: #ff0000;
         overflow: hidden;
         position: relative;
+        font-family: monospace;
     }
 
     #logo {
@@ -59,7 +60,6 @@
         padding-left: 20px;
         z-index: 5;
         transition: bottom 0.15s ease-in-out;
-        font-family: monospace;
     }
 
     #bottomMenu ul {
@@ -92,6 +92,62 @@
         color: white;
         user-select: none;
     }
+
+    #mailingPopup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: black;
+        color: white;
+        padding: 30px;
+        border: 4px solid red;
+        z-index: 20;
+        width: 300px;
+        text-align: center;
+        animation: popupAnim 0.3s ease forwards;
+    }
+
+    @keyframes popupAnim {
+        from { transform: translate(-50%, -60%) scale(0.8); opacity: 0; }
+        to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    #mailingPopup input[type="email"] {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid red;
+        background: black;
+        color: white;
+        font-family: monospace;
+        margin-bottom: 15px;
+    }
+
+    #mailingPopup button {
+        padding: 10px 20px;
+        background: red;
+        border: none;
+        color: white;
+        font-family: monospace;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    #mailingPopup button:hover {
+        background: white;
+        color: red;
+        border: 2px solid red;
+    }
+
+    #mailingPopup .close-btn {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 18px;
+    }
 </style>
 </head>
 <body>
@@ -102,14 +158,20 @@
     <ul>
         <li><a href="#" class="menu-link">BROWSE</a></li>
         <li class="separator">⎯⎯⎯⎯⎯</li>
-        <li><a href="#" class="menu-link">MAILING LIST</a></li>
+        <li><a href="#" class="menu-link" id="mailingBtn">MAILING LIST</a></li>
     </ul>
+</div>
+
+<div id="mailingPopup">
+    <span class="close-btn" id="closePopup">×</span>
+    <h2>JOIN OUR MAILING LIST</h2>
+    <input type="email" placeholder="Type your email here" />
+    <button id="submitEmail">SUBMIT</button>
 </div>
 
 <script>
     const logoText = "LUXXCATALOG";
     const logo = document.getElementById('logo');
-
     const fonts = ['Experimento', 'GadetyperRegular', 'timesnewarial'];
 
     function randomizeLogo() {
@@ -129,7 +191,7 @@
     let bottomMenu = document.getElementById('bottomMenu');
 
     window.addEventListener('wheel', function(e) {
-        if (e.deltaY > 0) {
+        if (e.deltaY < 0) {
             bottomMenu.style.bottom = "0px";
         } else {
             bottomMenu.style.bottom = "-60px";
@@ -143,11 +205,29 @@
 
     window.addEventListener('touchmove', function(e) {
         let touchEndY = e.touches[0].clientY;
-        if (touchEndY < touchStartY - 10) {
+        if (touchEndY > touchStartY + 10) {
             bottomMenu.style.bottom = "0px";
-        } else if (touchEndY > touchStartY + 10) {
+        } else if (touchEndY < touchStartY - 10) {
             bottomMenu.style.bottom = "-60px";
         }
+    });
+
+    const mailingBtn = document.getElementById('mailingBtn');
+    const mailingPopup = document.getElementById('mailingPopup');
+    const closePopup = document.getElementById('closePopup');
+
+    mailingBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        mailingPopup.style.display = "block";
+    });
+
+    closePopup.addEventListener('click', function() {
+        mailingPopup.style.display = "none";
+    });
+
+    document.getElementById('submitEmail').addEventListener('click', function() {
+        alert("this is just a placeholder form for now");
+        mailingPopup.style.display = "none";
     });
 </script>
 
