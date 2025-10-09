@@ -52,6 +52,8 @@
         justify-content: center;
         align-items: center;
         background-color: red;
+        position: relative;
+        overflow: hidden;
     }
 
     #logo {
@@ -59,6 +61,7 @@
         line-height: 1;
         white-space: nowrap;
         display: flex;
+        transition: transform 0.1s ease, opacity 0.1s ease;
     }
 
     .letter {
@@ -105,7 +108,7 @@
 
     window.addEventListener('wheel', (e) => {
         e.preventDefault();
-        targetVelocity += e.deltaY * 0.5; // scroll sensitivity
+        targetVelocity += e.deltaY * 0.5;
     }, { passive: false });
 
     function animate() {
@@ -119,6 +122,16 @@
         if (carousel.scrollLeft < 0) {
             carousel.scrollLeft = carousel.scrollWidth / 2;
         }
+
+        const logoPanel = document.querySelector('#logo-panel #logo');
+        const scrollAmount = carousel.scrollLeft;
+        const fadeStart = 0;
+        const fadeEnd = window.innerWidth;
+
+        let opacity = 1 - (scrollAmount - fadeStart) / fadeEnd;
+        opacity = Math.max(0, Math.min(1, opacity));
+        logoPanel.style.opacity = opacity;
+        logoPanel.style.transform = `translateY(${-scrollAmount * 0.2}px)`;
 
         requestAnimationFrame(animate);
     }
