@@ -100,17 +100,30 @@
     setInterval(randomizeLogo, 117);
 
     const carousel = document.getElementById('carousel');
+    let velocity = 0;
+    let targetVelocity = 0;
 
     window.addEventListener('wheel', (e) => {
         e.preventDefault();
-        carousel.scrollLeft += e.deltaY * 2; // speed multiplier
+        targetVelocity += e.deltaY * 0.5; // scroll sensitivity
+    }, { passive: false });
+
+    function animate() {
+        velocity += (targetVelocity - velocity) * 0.1;
+        targetVelocity *= 0.9; 
+        carousel.scrollLeft += velocity;
+
         if (carousel.scrollLeft >= carousel.scrollWidth / 2) {
             carousel.scrollLeft = 0;
         }
         if (carousel.scrollLeft < 0) {
             carousel.scrollLeft = carousel.scrollWidth / 2;
         }
-    }, { passive: false });
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
 </script>
 
 </body>
