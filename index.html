@@ -34,13 +34,14 @@
         flex-direction: row;
         height: 100vh;
         overflow: hidden;
-        position: relative;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
     }
 
     .panel {
         flex: 0 0 100vw;
         height: 100vh;
-        transition: transform 0.5s ease;
+        scroll-snap-align: start;
     }
 
     #logo-panel {
@@ -91,28 +92,17 @@
     setInterval(randomizeLogo, 117);
 
     const carousel = document.getElementById('carousel');
-    let currentIndex = 0;
-    const panels = document.querySelectorAll('.panel');
-
-    function goToNextPanel() {
-        currentIndex++;
-        if (currentIndex >= panels.length) {
-            currentIndex = 0;
-        }
-        carousel.style.transform = `translateX(-${currentIndex * 100}vw)`;
-    }
+    let isScrolling = false;
 
     window.addEventListener('wheel', (e) => {
-        e.preventDefault();
+        if (isScrolling) return;
+        isScrolling = true;
         if (e.deltaY > 0) {
-            goToNextPanel();
+            carousel.scrollBy({ left: window.innerWidth, behavior: 'smooth' });
         } else {
-            currentIndex--;
-            if (currentIndex < 0) {
-                currentIndex = panels.length - 1;
-            }
-            carousel.style.transform = `translateX(-${currentIndex * 100}vw)`;
+            carousel.scrollBy({ left: -window.innerWidth, behavior: 'smooth' });
         }
+        setTimeout(() => { isScrolling = false; }, 500);
     }, { passive: false });
 </script>
 
