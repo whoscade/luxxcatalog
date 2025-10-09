@@ -22,7 +22,6 @@
         margin: 0;
         padding: 0;
         height: 100%;
-        overflow: hidden;
     }
 
     body {
@@ -31,8 +30,6 @@
         align-items: center;
         background-color: #ff0000;
         overflow: hidden;
-        position: relative;
-        font-family: monospace;
     }
 
     #logo {
@@ -40,61 +37,49 @@
         line-height: 1;
         white-space: nowrap;
         display: flex;
-        z-index: 10;
-        position: relative;
     }
 
     .letter {
         display: inline-block;
     }
 
-    #bottomMenu {
+    #bottom-menu {
         position: fixed;
-        bottom: -60px;
+        bottom: -50px;
         left: 0;
         width: 100%;
-        height: 60px;
         background: black;
+        color: white;
         display: flex;
         align-items: center;
-        padding-left: 20px;
-        z-index: 5;
-        transition: bottom 0.15s ease-in-out;
-    }
-
-    #bottomMenu ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-    }
-
-    #bottomMenu ul li {
-        margin: 0 10px;
-        color: white;
-    }
-
-    #bottomMenu ul li a.menu-link {
-        text-decoration: none;
-        color: white;
+        justify-content: flex-start;
+        padding: 10px;
         font-family: monospace;
-        transition: border-bottom 0.2s ease-in-out;
-        border-bottom: 1px solid transparent;
+        transition: bottom 0.3s;
+        z-index: 999;
     }
 
-    #bottomMenu ul li a.menu-link:hover {
+    #bottom-menu a {
+        color: white;
+        text-decoration: none;
+        margin: 0 15px;
+        font-size: 16px;
+        cursor: pointer;
+        border-bottom: 1px solid transparent;
+        transition: border-bottom 0.2s;
+    }
+
+    #bottom-menu a:hover {
         border-bottom: 1px solid white;
     }
 
-    .separator {
-        cursor: default;
-        color: white;
-        user-select: none;
+    #bottom-menu .divider {
+        flex-grow: 1;
+        border-bottom: 1px solid white;
+        margin: 0 15px;
     }
 
-    #mailingPopup {
-        display: none;
+    #email-popup {
         position: fixed;
         top: 50%;
         left: 50%;
@@ -102,51 +87,45 @@
         background: black;
         color: white;
         padding: 30px;
-        border: 4px solid red;
-        z-index: 20;
-        width: 300px;
+        border: 3px solid red;
+        display: none;
+        z-index: 1000;
+        font-family: monospace;
         text-align: center;
-        animation: popupAnim 0.3s ease forwards;
     }
 
-    @keyframes popupAnim {
-        from { transform: translate(-50%, -60%) scale(0.8); opacity: 0; }
-        to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    #email-popup input[type="email"] {
+        padding: 8px;
+        margin: 10px 0;
+        width: 80%;
+        border: none;
+        outline: none;
     }
 
-    #mailingPopup input[type="email"] {
-        width: 100%;
-        padding: 10px;
+    #email-popup button {
+        padding: 8px 20px;
+        background: white;
+        color: black;
         border: 2px solid red;
+        cursor: pointer;
+        font-family: monospace;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    #email-popup button:hover {
         background: black;
         color: white;
-        font-family: monospace;
-        margin-bottom: 15px;
     }
 
-    #mailingPopup button {
-        padding: 10px 20px;
-        background: red;
-        border: none;
-        color: white;
-        font-family: monospace;
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-    #mailingPopup button:hover {
-        background: white;
-        color: red;
-        border: 2px solid red;
-    }
-
-    #mailingPopup .close-btn {
-        position: absolute;
-        top: 5px;
-        right: 10px;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 18px;
+    #popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        display: none;
+        z-index: 999;
     }
 </style>
 </head>
@@ -154,19 +133,18 @@
 
 <div id="logo"></div>
 
-<div id="bottomMenu">
-    <ul>
-        <li><a href="#" class="menu-link">BROWSE</a></li>
-        <li class="separator">⎯⎯⎯⎯⎯</li>
-        <li><a href="#" class="menu-link" id="mailingBtn">MAILING LIST</a></li>
-    </ul>
+<div id="popup-overlay"></div>
+<div id="email-popup">
+    <h2>JOIN THE MAILING LIST</h2>
+    <input type="email" placeholder="Type your email here">
+    <br>
+    <button id="submit-email">Submit</button>
 </div>
 
-<div id="mailingPopup">
-    <span class="close-btn" id="closePopup">×</span>
-    <h2>JOIN OUR MAILING LIST</h2>
-    <input type="email" placeholder="Type your email here" />
-    <button id="submitEmail">SUBMIT</button>
+<div id="bottom-menu">
+    <a id="browse-btn">BROWSE</a>
+    <div class="divider"></div>
+    <a id="mailing-list-btn">MAILING LIST</a>
 </div>
 
 <script>
@@ -188,46 +166,30 @@
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
-    let bottomMenu = document.getElementById('bottomMenu');
+    let lastScroll = window.scrollY;
+    const bottomMenu = document.getElementById('bottom-menu');
 
-    window.addEventListener('wheel', function(e) {
-        if (e.deltaY < 0) {
-            bottomMenu.style.bottom = "0px";
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > lastScroll) {
+            bottomMenu.style.bottom = "-50px";
         } else {
-            bottomMenu.style.bottom = "-60px";
-        }
-    });
-
-    let touchStartY = 0;
-    window.addEventListener('touchstart', function(e) {
-        touchStartY = e.touches[0].clientY;
-    });
-
-    window.addEventListener('touchmove', function(e) {
-        let touchEndY = e.touches[0].clientY;
-        if (touchEndY > touchStartY + 10) {
             bottomMenu.style.bottom = "0px";
-        } else if (touchEndY < touchStartY - 10) {
-            bottomMenu.style.bottom = "-60px";
         }
+        lastScroll = window.scrollY;
     });
 
-    const mailingBtn = document.getElementById('mailingBtn');
-    const mailingPopup = document.getElementById('mailingPopup');
-    const closePopup = document.getElementById('closePopup');
+    const mailingListBtn = document.getElementById('mailing-list-btn');
+    const popup = document.getElementById('email-popup');
+    const overlay = document.getElementById('popup-overlay');
 
-    mailingBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        mailingPopup.style.display = "block";
+    mailingListBtn.addEventListener('click', () => {
+        popup.style.display = 'block';
+        overlay.style.display = 'block';
     });
 
-    closePopup.addEventListener('click', function() {
-        mailingPopup.style.display = "none";
-    });
-
-    document.getElementById('submitEmail').addEventListener('click', function() {
-        alert("this is just a placeholder form for now");
-        mailingPopup.style.display = "none";
+    overlay.addEventListener('click', () => {
+        popup.style.display = 'none';
+        overlay.style.display = 'none';
     });
 </script>
 
