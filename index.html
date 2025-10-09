@@ -29,29 +29,29 @@
         background-color: black;
     }
 
-    .carousel {
-        display: flex;
-        flex-direction: row;
+    .carousel-container {
+        position: relative;
+        width: 100vw;
         height: 100vh;
-        overflow-x: scroll;
-        scroll-behavior: smooth;
-        scrollbar-width: none;
-    }
-
-    .carousel::-webkit-scrollbar {
-        display: none;
     }
 
     .panel {
-        flex: 0 0 100vw;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
         height: 100vh;
     }
 
     #logo-panel {
+        background-color: red;
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: red;
+    }
+
+    #blank-panel {
+        background-color: black;
     }
 
     #logo {
@@ -64,42 +64,15 @@
     .letter {
         display: inline-block;
     }
-
-    .panel.split {
-        display: flex;
-    }
-
-    .split .left {
-        flex: 1;
-        background-color: black;
-    }
-
-    .split .right {
-        flex: 1;
-        background-color: red;
-    }
 </style>
 </head>
 <body>
 
-<div class="carousel" id="carousel">
+<div class="carousel-container">
     <div class="panel" id="logo-panel">
         <div id="logo"></div>
     </div>
-
-    <div class="panel split">
-        <div class="left"></div>
-        <div class="right"></div>
-    </div>
-
-    <div class="panel"></div>
-    <div class="panel" id="logo-panel-clone">
-        <div id="logo"></div>
-    </div>
-    <div class="panel split">
-        <div class="left"></div>
-        <div class="right"></div>
-    </div>
+    <div class="panel" id="blank-panel"></div>
 </div>
 
 <script>
@@ -107,46 +80,33 @@
     const fonts = ['Experimento', 'GadetyperRegular', 'timesnewarial'];
 
     function randomizeLogo() {
-        document.querySelectorAll('#logo').forEach(logo => {
-            logo.innerHTML = '';
-            for (let char of logoText) {
-                const span = document.createElement('span');
-                span.classList.add('letter');
-                span.textContent = char;
-                span.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
-                logo.appendChild(span);
-            }
-        });
+        const logo = document.getElementById('logo');
+        logo.innerHTML = '';
+        for (let char of logoText) {
+            const span = document.createElement('span');
+            span.classList.add('letter');
+            span.textContent = char;
+            span.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+            logo.appendChild(span);
+        }
     }
 
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
-    const carousel = document.getElementById('carousel');
-    let velocity = 0;
-    let targetVelocity = 0;
+    const panels = document.querySelectorAll('.panel');
+    let currentPanel = 0;
 
     window.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        targetVelocity += e.deltaY * 0.5;
-    }, { passive: false });
-
-    function animate() {
-        velocity += (targetVelocity - velocity) * 0.1;
-        targetVelocity *= 0.9; 
-        carousel.scrollLeft += velocity;
-
-        if (carousel.scrollLeft >= carousel.scrollWidth / 2) {
-            carousel.scrollLeft = 0;
+        if (e.deltaY > 0) {
+            currentPanel = (currentPanel + 1) % panels.length;
+        } else {
+            currentPanel = (currentPanel - 1 + panels.length) % panels.length;
         }
-        if (carousel.scrollLeft < 0) {
-            carousel.scrollLeft = carousel.scrollWidth / 2;
-        }
-
-        requestAnimationFrame(animate);
-    }
-
-    animate();
+        panels.forEach((panel, index) => {
+            panel.style.zIndex = (index === currentPanel) ? "10" : "1";
+        });
+    }, { passive: true });
 </script>
 
 </body>
