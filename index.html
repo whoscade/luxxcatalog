@@ -25,29 +25,25 @@
         overflow: hidden;
     }
 
-    body {
-        background-color: black;
-    }
-
-    .carousel-container {
-        position: relative;
-        width: 100vw;
+    .carousel {
         height: 100vh;
+        width: 100vw;
+        overflow-y: scroll;
+        scroll-snap-type: y mandatory;
+        -webkit-overflow-scrolling: touch;
     }
 
     .panel {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
+        scroll-snap-align: start;
         height: 100vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     #logo-panel {
         background-color: red;
-        display: flex;
-        justify-content: center;
-        align-items: center;
     }
 
     #blank-panel {
@@ -68,11 +64,12 @@
 </head>
 <body>
 
-<div class="carousel-container">
+<div class="carousel" id="carousel">
     <div class="panel" id="logo-panel">
         <div id="logo"></div>
     </div>
     <div class="panel" id="blank-panel"></div>
+    <div class="panel" id="logo-panel-clone"></div>
 </div>
 
 <script>
@@ -94,19 +91,15 @@
     randomizeLogo();
     setInterval(randomizeLogo, 117);
 
-    const panels = document.querySelectorAll('.panel');
-    let currentPanel = 0;
+    const carousel = document.getElementById('carousel');
+    const panels = carousel.children;
+    let panelCount = panels.length;
 
-    window.addEventListener('wheel', (e) => {
-        if (e.deltaY > 0) {
-            currentPanel = (currentPanel + 1) % panels.length;
-        } else {
-            currentPanel = (currentPanel - 1 + panels.length) % panels.length;
+    carousel.addEventListener('scroll', () => {
+        if (carousel.scrollTop + carousel.clientHeight >= carousel.scrollHeight) {
+            carousel.scrollTop = 0;
         }
-        panels.forEach((panel, index) => {
-            panel.style.zIndex = (index === currentPanel) ? "10" : "1";
-        });
-    }, { passive: true });
+    });
 </script>
 
 </body>
