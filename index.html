@@ -22,36 +22,14 @@
         margin: 0;
         padding: 0;
         height: 100%;
-        overflow: hidden;
     }
 
     body {
-        background-color: black;
-    }
-
-    .carousel {
-        display: flex;
-        flex-direction: row;
-        height: 100vh;
-        overflow-x: scroll;
-        scroll-behavior: smooth;
-        scrollbar-width: none;
-    }
-
-    .carousel::-webkit-scrollbar {
-        display: none;
-    }
-
-    .panel {
-        flex: 0 0 100vw;
-        height: 100vh;
-    }
-
-    #logo-panel {
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: red;
+        background-color: #ff0000;
+        overflow: hidden;
     }
 
     #logo {
@@ -68,16 +46,12 @@
 </head>
 <body>
 
-<div class="carousel" id="carousel">
-    <div class="panel" id="logo-panel">
-        <div id="logo"></div>
-    </div>
-    <div class="panel"></div>
-</div>
+<div id="logo"></div>
 
 <script>
     const logoText = "LUXXCATALOG";
     const logo = document.getElementById('logo');
+
     const fonts = ['Experimento', 'GadetyperRegular', 'timesnewarial'];
 
     function randomizeLogo() {
@@ -93,13 +67,6 @@
 
     randomizeLogo();
     setInterval(randomizeLogo, 117);
-
-    const carousel = document.getElementById('carousel');
-
-    window.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        carousel.scrollLeft += e.deltaY;
-    }, { passive: false });
 </script>
 
 </body>
