@@ -5,97 +5,185 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LUXXCATALOG</title>
 <style>
-    @font-face {
-        font-family: 'Experimento';
-        src: url('fonts/Experimento.ttf') format('truetype');
-    }
-    @font-face {
-        font-family: 'GadetyperRegular';
-        src: url('fonts/GadetyperRegular.otf') format('opentype');
-    }
-    @font-face {
-        font-family: 'timesnewarial';
-        src: url('fonts/timesnewarial.ttf') format('truetype');
-    }
+@font-face { font-family: 'Experimento'; src: url('fonts/Experimento.ttf') format('truetype'); }
+@font-face { font-family: 'GadetyperRegular'; src: url('fonts/GadetyperRegular.otf') format('opentype'); }
+@font-face { font-family: 'timesnewarial'; src: url('fonts/timesnewarial.ttf') format('truetype'); }
 
-    html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden;
-    }
+html, body { margin:0; padding:0; height:100%; overflow:hidden; }
+body { display:flex; justify-content:center; align-items:center; background-color:#ff0000; font-family:'Experimento', sans-serif; }
 
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #ff0000;
-    }
+#logo { font-size:clamp(2.5rem, 12vw, 8rem); line-height:1; white-space:nowrap; display:flex; }
+.letter { display:inline-block; }
 
-    #logo {
-        font-size: clamp(2.5rem, 12vw, 8rem);
-        line-height: 1;
-        white-space: nowrap;
-        display: flex;
-    }
+#scrollMenu {
+    position: fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:50vh;
+    background-color:#111;
+    transform:translateY(100%);
+    transition: transform 0.3s ease;
+    z-index:1000;
+    pointer-events:none;
+    display:flex;
+    flex-direction:column;
+    padding:20px;
+    box-sizing:border-box;
+}
 
-    .letter {
-        display: inline-block;
-    }
+#scrollMenu.active { transform:translateY(0); pointer-events:auto; }
 
-    #scrollMenu {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 50vh;
-        background-color: black;
-        transform: translateY(100%);
-        transition: transform 0.3s ease;
-        z-index: 1000;
-        pointer-events: none;
-    }
+#menuBar {
+    height:12%;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    color:white;
+    font-family:monospace;
+    font-size:0.9rem;
+    gap:25px;
+    border-bottom:1px solid #333;
+    padding-bottom:8px;
+    padding-left:12px;
+}
 
-    #scrollMenu.active {
-        transform: translateY(0);
-        pointer-events: auto;
-    }
+#menuBar div {
+    cursor:pointer;
+    position: relative;
+}
+
+#menuBar div::after {
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: white;
+    transition: width 0.2s ease;
+}
+
+#menuBar div:hover::after {
+    width: 100%;
+}
+
+#synthArea {
+    flex:1;
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    gap:20px;
+}
+
+#pads { display:flex; flex-direction:column; gap:16px; flex-shrink:0; }
+
+.padRow { display:flex; gap:16px; }
+
+.pad { width:100px; height:100px; background:#222; border-radius:6px; display:flex; justify-content:center; align-items:center; cursor:pointer; position:relative; transition:0.1s; }
+
+.pad span { 
+    position:absolute; 
+    top:6px; 
+    right:6px; 
+    width:12px; 
+    height:12px; 
+    border-radius:50%; 
+    background:#600; 
+    box-shadow:0 0 4px #600; 
+}
+
+.pad.active span { 
+    background:#f22; 
+    box-shadow:0 0 8px #f22; 
+}
+
+.pad:hover, .pad.active { 
+    box-shadow: 0 0 6px #ff0000, 0 0 8px #ff0000 inset; 
+}
+
+#divider { width:2px; background:#333; margin:0 20px; }
 </style>
 </head>
 <body>
 
 <div id="logo"></div>
-<div id="scrollMenu"></div>
+
+<div id="scrollMenu">
+    <div id="menuBar">
+        <div>ARCHIVE</div>
+        <div>MAILING LIST</div>
+    </div>
+
+    <div id="synthArea">
+        <div id="pads">
+            <div class="padRow" id="padRowTop"></div>
+            <div class="padRow" id="padRowBottom"></div>
+        </div>
+        <div id="divider"></div>
+    </div>
+</div>
 
 <script>
-    const logoText = "LUXXCATALOG";
-    const logo = document.getElementById('logo');
-    const fonts = ['Experimento', 'GadetyperRegular', 'timesnewarial'];
-
-    function randomizeLogo() {
-        logo.innerHTML = '';
-        for (let char of logoText) {
-            const span = document.createElement('span');
-            span.classList.add('letter');
-            span.textContent = char;
-            span.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
-            logo.appendChild(span);
-        }
+const logoText="LUXXCATALOG";
+const logo=document.getElementById('logo');
+const fonts=['Experimento','GadetyperRegular','timesnewarial'];
+function randomizeLogo(){
+    logo.innerHTML='';
+    for(let char of logoText){
+        const span=document.createElement('span');
+        span.classList.add('letter');
+        span.textContent=char;
+        span.style.fontFamily=fonts[Math.floor(Math.random()*fonts.length)];
+        logo.appendChild(span);
     }
+}
+randomizeLogo();
+setInterval(randomizeLogo,117);
 
-    randomizeLogo();
-    setInterval(randomizeLogo, 117);
+const menu=document.getElementById('scrollMenu');
+window.addEventListener('wheel',(e)=>{
+    const deltaY=e.deltaY;
+    if(deltaY>0) menu.classList.add('active');
+    else if(deltaY<0) menu.classList.remove('active');
+});
 
-    const menu = document.getElementById('scrollMenu');
+const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+let attack=0.1, release=0.2;
 
-    window.addEventListener('wheel', (e) => {
-        const deltaY = e.deltaY;
-        if (deltaY > 0) {
-            menu.classList.add('active');
-        } else if (deltaY < 0) {
-            menu.classList.remove('active');
+const padRows=[document.getElementById('padRowTop'), document.getElementById('padRowBottom')];
+const padData=[];
+for(let i=0;i<12;i++){
+    const pad=document.createElement('div');
+    pad.classList.add('pad');
+    const led=document.createElement('span');
+    pad.appendChild(led);
+    const row = i<6 ? padRows[0] : padRows[1];
+    row.appendChild(pad);
+
+    let osc=null;
+    let gainNode=null;
+
+    pad.addEventListener('click',()=>{
+        if(pad.classList.contains('active')){
+            gainNode.gain.linearRampToValueAtTime(0,audioCtx.currentTime+release);
+            setTimeout(()=>{osc.stop(); osc=null; gainNode=null;},(release*1000)+50);
+            pad.classList.remove('active');
+        } else {
+            pad.classList.add('active');
+            osc=audioCtx.createOscillator();
+            osc.type='sine';
+            osc.frequency.setValueAtTime(110*Math.pow(2,i/12),audioCtx.currentTime);
+            gainNode=audioCtx.createGain();
+            gainNode.gain.setValueAtTime(0,audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(1,audioCtx.currentTime+attack);
+            osc.connect(gainNode).connect(audioCtx.destination);
+            osc.start();
         }
     });
+
+    padData.push({pad, osc, gainNode});
+}
 </script>
 
 </body>
