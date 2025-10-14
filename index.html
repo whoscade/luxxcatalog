@@ -204,8 +204,10 @@ const bufferLength=analyser.fftSize;
 const dataArray=new Float32Array(bufferLength);
 let displayedWave=new Float32Array(bufferLength).fill(canvas.height/2);
 
-const loopDuration = 3; // seconds, matches your 2-bar 140bpm loop audio
-let loopStartTime = audioCtx.currentTime;
+const bpm = 140;
+const beatsPerBar = 4;
+const barLength = (60/bpm) * beatsPerBar;
+let loopStartTime = 0;
 
 const sampleFiles=['kick.mp3','metal_snare.mp3'];
 const sampleBuffers=[];
@@ -227,6 +229,11 @@ function playSample(buffer,startTime){
   source.connect(analyser).connect(audioCtx.destination);
   source.start(startTime);
   return source;
+}
+
+function getNextGridTime(){
+  const now = audioCtx.currentTime;
+  return loopStartTime + Math.ceil((now - loopStartTime)/barLength)*barLength;
 }
 
 function drawStaticWave(){
@@ -275,13 +282,19 @@ for(let i=0;i<12;i++){
     } else {
       let buffer=null;
       if(i<sampleBuffers.length) buffer=sampleBuffers[i];
-      const now=audioCtx.currentTime;
-      const nextLoopTime=loopStartTime + Math.ceil((now-loopStartTime)/loopDuration)*loopDuration;
-      if(buffer){
-        const source=playSample(buffer,nextLoopTime);
-        padData.set(pad,{source});
-        pad.classList.add('active');
+      if(!buffer) return;
+
+      let startTime;
+      if(padData.size===0){
+        startTime=audioCtx.currentTime;
+        loopStartTime=startTime;
+      } else {
+        startTime=getNextGridTime();
       }
+
+      const source=playSample(buffer,startTime);
+      padData.set(pad,{source});
+      pad.classList.add('active');
     }
   });
 }
