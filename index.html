@@ -276,7 +276,7 @@ function drawWave(){
   ctx.fillStyle='#181818';
   ctx.fillRect(0,0,canvas.width,canvas.height);
   ctx.lineWidth=2;
-  ctx.strokeStyle='#ff0000';
+  ctx.strokeStyle = padData.size > 0 ? '#ff0000' : '#600';
   ctx.beginPath();
   let targetWave;
   if(padData.size>0){
