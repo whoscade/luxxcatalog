@@ -210,7 +210,7 @@ const bars = 2;
 const loopLength = (60/bpm)*beatsPerBar*bars;
 
 let masterLoopStart = null;
-let queuedPads = [];
+let activePads = [];
 
 const sampleFiles=['kick.mp3','metal_snare.mp3'];
 const sampleBuffers=[];
@@ -248,7 +248,7 @@ function drawWave(){
   ctx.lineWidth=2;
   ctx.strokeStyle='#ff0000';
   ctx.beginPath();
-  if(padData.size>0){
+  if(activePads.length>0){
     analyser.getFloatTimeDomainData(dataArray);
     for(let i=0;i<bufferLength;i++){
       displayedWave[i]+=((canvas.height/2 + dataArray[i]*0.8*canvas.height/2)-displayedWave[i])*0.2;
@@ -266,18 +266,7 @@ function drawWave(){
 }
 drawWave();
 
-function scheduleQueuedPads(){
-  const now=audioCtx.currentTime;
-  if(masterLoopStart===null) masterLoopStart=now;
-  const nextLoopTime=masterLoopStart + loopLength;
-  while(queuedPads.length>0){
-    const {pad,buffer}=queuedPads.shift();
-    const source=playSample(buffer,nextLoopTime);
-    padData.set(pad,{source});
-    pad.classList.add('active');
-  }
-  masterLoopStart=nextLoopTime;
-}
+let masterClock = null;
 
 for(let i=0;i<12;i++){
   const pad=document.createElement('div');
@@ -289,21 +278,42 @@ for(let i=0;i<12;i++){
       const data=padData.get(pad);
       if(data) data.source.stop();
       padData.delete(pad);
+      activePads = activePads.filter(p=>p!==pad);
       pad.classList.remove('active');
-      if(padData.size===0) masterLoopStart=null;
+      if(activePads.length===0){
+        clearInterval(masterClock);
+        masterClock=null;
+        masterLoopStart=null;
+      }
     } else {
       let buffer=null;
       if(i<sampleBuffers.length) buffer=sampleBuffers[i];
       if(!buffer) return;
 
-      if(padData.size===0){
+      if(activePads.length===0){
         const source=playSample(buffer,audioCtx.currentTime);
         padData.set(pad,{source});
+        activePads.push(pad);
         pad.classList.add('active');
-        if(masterLoopStart===null) masterLoopStart=audioCtx.currentTime;
+        masterLoopStart=audioCtx.currentTime;
+        masterClock = setInterval(()=>{
+          const nextLoopTime=masterLoopStart + loopLength;
+          activePads.forEach(p=>{
+            const data=padData.get(p);
+            if(data) data.source.stop();
+            const idx = sampleBuffers.indexOf(sampleBuffers[padRows[0].children.indexOf(p)]);
+            if(idx===-1) return;
+            const newSource=playSample(sampleBuffers[idx],nextLoopTime);
+            padData.set(p,{source:newSource});
+          });
+          masterLoopStart=nextLoopTime;
+        }, loopLength*1000);
       } else {
-        queuedPads.push({pad,buffer});
-        scheduleQueuedPads();
+        const startTime = masterLoopStart + loopLength;
+        const source=playSample(buffer,startTime);
+        padData.set(pad,{source});
+        activePads.push(pad);
+        pad.classList.add('active');
       }
     }
   });
