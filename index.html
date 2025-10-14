@@ -105,7 +105,7 @@ html, body {
 .pad {
   width:min(22vw,100px);
   height:min(22vw,100px);
-  background:#181818;
+  background:#181818 url('imgs/button.jpg') center/cover no-repeat;
   border-radius:6px;
   display:flex;
   justify-content:center;
@@ -337,26 +337,4 @@ for(let i=0;i<12;i++){
       padData.set(pad,{osc,gainNode});
     }
   }
-  pad.addEventListener('click',playPad);
-  pad.addEventListener('touchstart',e=>{e.preventDefault();playPad();});
-}
-
-function updateActiveWaveforms() {
-  padData.forEach(({osc}) => { try { osc.type=currentWave; } catch{} });
-}
-
-document.getElementById('prevWave').addEventListener('click',()=>{
-  let index=waveTypes.indexOf(currentWave);
-  index=(index-1+waveTypes.length)%waveTypes.length;
-  currentWave=waveTypes[index];
-  updateActiveWaveforms();
-});
-document.getElementById('nextWave').addEventListener('click',()=>{
-  let index=waveTypes.indexOf(currentWave);
-  index=(index+1)%waveTypes.length;
-  currentWave=waveTypes[index];
-  updateActiveWaveforms();
-});
-</script>
-</body>
-</html>
+  pad.addEventListener
