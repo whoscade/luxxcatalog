@@ -115,26 +115,12 @@ html, body {
   transition:0.1s;
 }
 
-.pad:hover { box-shadow:0 0 6px #ff0000 inset; }
+.pad:hover { 
+  box-shadow:0 0 6px #ff0000 inset; 
+}
 
 .pad.active {
   box-shadow:0 0 6px #ff0000,0 0 12px #ff0000 inset;
-}
-
-.pad span {
-  position:absolute;
-  top:6px;
-  right:6px;
-  width:12px;
-  height:12px;
-  border-radius:50%;
-  background:#600;
-  box-shadow:0 0 4px #600;
-}
-
-.pad.active span {
-  background:#ff0000;
-  box-shadow:0 0 12px #ff0000;
 }
 
 #divider {
@@ -305,8 +291,6 @@ drawWave();
 for(let i=0;i<12;i++){
   const pad=document.createElement('div');
   pad.classList.add('pad');
-  const led=document.createElement('span');
-  pad.appendChild(led);
   const row=i<6?padRows[0]:padRows[1];
   row.appendChild(pad);
 
