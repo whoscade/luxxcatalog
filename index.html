@@ -329,12 +329,4 @@ for(let i=0;i<12;i++){
       const gainNode=audioCtx.createGain();
       const now=audioCtx.currentTime;
       osc.type=currentWave;
-      osc.frequency.setValueAtTime(110*Math.pow(2,i/12),now);
-      gainNode.gain.setValueAtTime(0,now);
-      gainNode.gain.linearRampToValueAtTime(1,now+attack);
-      osc.connect(gainNode).connect(analyser).connect(audioCtx.destination);
-      osc.start();
-      padData.set(pad,{osc,gainNode});
-    }
-  }
-  pad.addEventListener
+      osc.frequency.setValueAtTime(110*Math.pow(
