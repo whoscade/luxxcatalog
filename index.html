@@ -202,12 +202,12 @@ const analyser=audioCtx.createAnalyser();
 analyser.fftSize=1024;
 const bufferLength=analyser.fftSize;
 const dataArray=new Float32Array(bufferLength);
-let displayedWave=new Float32Array(bufferLength);
+let displayedWave=new Float32Array(bufferLength).fill(canvas.height/2);
 
-const loopLength=2;
+const loopLength=;
 let loopStartTime=audioCtx.currentTime;
 
-const sampleFiles=['kick.mp3','808.mp3','metal_snare.mp3'];
+const sampleFiles=['kick.mp3','metal_snare.mp3'];
 const sampleBuffers=[];
 
 function loadSamples(){
@@ -230,11 +230,9 @@ function playSample(buffer,startTime){
 }
 
 function drawStaticWave(){
-  const w=canvas.width;
   const h=canvas.height;
-  for(let i=0;i<w;i++){
-    const y=h/2;
-    displayedWave[i] += (y-displayedWave[i])*0.12;
+  for(let i=0;i<displayedWave.length;i++){
+    displayedWave[i]+=(h/2-displayedWave[i])*0.05;
   }
 }
 
@@ -248,7 +246,7 @@ function drawWave(){
   if(padData.size>0){
     analyser.getFloatTimeDomainData(dataArray);
     for(let i=0;i<bufferLength;i++){
-      displayedWave[i] += ((canvas.height/2 + dataArray[i]*0.8*canvas.height/2)-displayedWave[i])*0.15;
+      displayedWave[i]+=((canvas.height/2 + dataArray[i]*0.8*canvas.height/2)-displayedWave[i])*0.2;
       const x=i*canvas.width/bufferLength;
       const y=displayedWave[i];
       if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
