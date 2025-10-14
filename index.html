@@ -1,3 +1,7 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -115,13 +119,9 @@ html, body {
   transition:0.1s;
 }
 
-.pad:hover { 
-  box-shadow:0 0 6px #ff0000 inset; 
-}
+.pad:hover { box-shadow:0 0 6px #ff0000 inset; }
 
-.pad.active {
-  box-shadow:0 0 6px #ff0000,0 0 12px #ff0000 inset;
-}
+.pad.active { box-shadow:0 0 6px #ff0000,0 0 12px #ff0000 inset; }
 
 #divider {
   width:2px;
@@ -140,36 +140,6 @@ html, body {
   box-shadow: inset 0 4px 12px #000;
 }
 
-#waveSelector {
-  display:flex;
-  flex-direction:row;
-  align-items:center;
-  justify-content:center;
-  margin-left:-200px;
-  margin-top:90px;
-  gap:10px;
-}
-
-.waveButton {
-  width:28px;
-  height:28px;
-  background:#181818;
-  border-radius:4px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  color:white;
-  user-select:none;
-  font-family:monospace;
-  font-weight:normal;
-  transition:0.15s;
-}
-
-.waveButton:hover {
-  box-shadow:0 0 6px #ff0000 inset, 0 0 12px #ff0000;
-  color:#ff3333;
-}
 </style>
 </head>
 <body>
@@ -185,10 +155,6 @@ html, body {
       <div class="padRow" id="padRowBottom"></div>
     </div>
     <canvas id="waveCanvas" width="180" height="80"></canvas>
-    <div id="waveSelector">
-      <div class="waveButton" id="prevWave">&#9664;</div>
-      <div class="waveButton" id="nextWave">&#9654;</div>
-    </div>
     <div id="divider"></div>
   </div>
 </div>
@@ -225,12 +191,24 @@ window.addEventListener('touchend', e=>{
 }, false);
 
 const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-let attack=0.1, release=0.25;
-let currentWave='sine';
-const waveTypes=['sine','triangle','sawtooth','square'];
-
+let loopLength=2.0;
+let currentTimeOffset=0;
+let padsData=new Map();
 const padRows=[document.getElementById('padRowTop'),document.getElementById('padRowBottom')];
-const padData=new Map();
+
+const sampleFiles=['/sounds/kick.mp3','/sounds/808.mp3','/sounds/metal_snare.mp3'];
+let sampleBuffers=[];
+
+async function loadSamples(){
+  for(let file of sampleFiles){
+    const res=await fetch(file);
+    const arrayBuffer=await res.arrayBuffer();
+    const buffer=await audioCtx.decodeAudioData(arrayBuffer);
+    sampleBuffers.push(buffer);
+  }
+}
+loadSamples();
+
 const canvas=document.getElementById('waveCanvas');
 const ctx=canvas.getContext('2d');
 const analyser=audioCtx.createAnalyser();
@@ -239,48 +217,17 @@ const bufferLength=analyser.fftSize;
 const dataArray=new Float32Array(bufferLength);
 let displayedWave=new Float32Array(bufferLength);
 
-function getWavePoints(type){
-  const w=canvas.width;
-  const h=canvas.height;
-  const points=new Float32Array(w);
-  for(let i=0;i<w;i++){
-    const x=i/w*2*Math.PI;
-    let y=h/2;
-    if(type==='sine') y=h/2 + Math.sin(x)*h/2*0.8;
-    else if(type==='triangle') y=h/2 + (2/Math.PI)*Math.asin(Math.sin(x))*h/2*0.8;
-    else if(type==='square') y=h/2 + Math.sign(Math.sin(x))*h/2*0.8;
-    else if(type==='sawtooth') y=h/2 + (2*(x/2/Math.PI - Math.floor(0.5 + x/2/Math.PI)))*h/2*0.8;
-    points[i] = y;
-  }
-  return points;
-}
-
-displayedWave = getWavePoints(currentWave);
-
 function drawWave(){
   requestAnimationFrame(drawWave);
   ctx.fillStyle='#181818';
   ctx.fillRect(0,0,canvas.width,canvas.height);
   ctx.lineWidth=2;
-  ctx.strokeStyle = padData.size > 0 ? '#ff0000' : '#600';
+  ctx.strokeStyle='#ff0000';
   ctx.beginPath();
-  let targetWave;
-  if(padData.size>0){
-    analyser.getFloatTimeDomainData(dataArray);
-    targetWave = new Float32Array(canvas.width);
-    for(let i=0;i<canvas.width;i++){
-      const idx=Math.floor(i*bufferLength/canvas.width);
-      targetWave[i] = canvas.height/2 + dataArray[idx]*0.8*canvas.height/2;
-      displayedWave[i] += (targetWave[i] - displayedWave[i])*0.15;
-    }
-  } else {
-    targetWave = getWavePoints(currentWave);
-    for(let i=0;i<canvas.width;i++){
-      displayedWave[i] += (targetWave[i] - displayedWave[i])*0.15;
-    }
-  }
-  for(let i=0;i<canvas.width;i++){
-    const x=i;
+  analyser.getFloatTimeDomainData(dataArray);
+  for(let i=0;i<bufferLength;i++){
+    displayedWave[i] += ((canvas.height/2 + dataArray[i]*0.8*canvas.height/2)-displayedWave[i])*0.15;
+    const x=i*canvas.width/bufferLength;
     const y=displayedWave[i];
     if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
   }
@@ -288,59 +235,27 @@ function drawWave(){
 }
 drawWave();
 
-for(let i=0;i<12;i++){
+for(let i=0;i<3;i++){
   const pad=document.createElement('div');
   pad.classList.add('pad');
-  const row=i<6?padRows[0]:padRows[1];
-  row.appendChild(pad);
+  padRows[0].appendChild(pad);
+  pad.dataset.sampleIndex=i;
 
-  function playPad(){
-    if(pad.classList.contains('active')){
-      const data=padData.get(pad);
-      if(data){
-        const {osc,gainNode}=data;
-        const now=audioCtx.currentTime;
-        gainNode.gain.cancelScheduledValues(now);
-        gainNode.gain.setValueAtTime(gainNode.gain.value,now);
-        gainNode.gain.linearRampToValueAtTime(0,now+release);
-        osc.stop(now+release+0.05);
-        setTimeout(()=>padData.delete(pad),(release*1000)+100);
-      }
-      pad.classList.remove('active');
-    } else {
-      pad.classList.add('active');
-      const osc=audioCtx.createOscillator();
-      const gainNode=audioCtx.createGain();
-      const now=audioCtx.currentTime;
-      osc.type=currentWave;
-      osc.frequency.setValueAtTime(110*Math.pow(2,i/12),now);
-      gainNode.gain.setValueAtTime(0,now);
-      gainNode.gain.linearRampToValueAtTime(1,now+attack);
-      osc.connect(gainNode).connect(analyser).connect(audioCtx.destination);
-      osc.start();
-      padData.set(pad,{osc,gainNode});
-    }
+  function scheduleSample(){
+    const buffer=sampleBuffers[pad.dataset.sampleIndex];
+    if(!buffer) return;
+    const nextLoopTime=Math.ceil(audioCtx.currentTime/loopLength)*loopLength;
+    const source=audioCtx.createBufferSource();
+    source.buffer=buffer;
+    source.connect(analyser).connect(audioCtx.destination);
+    source.start(nextLoopTime);
+    pad.classList.add('active');
+    setTimeout(()=>pad.classList.remove('active'),(loopLength*1000));
   }
-  pad.addEventListener('click',playPad);
-  pad.addEventListener('touchstart',e=>{e.preventDefault();playPad();});
-}
 
-function updateActiveWaveforms() {
-  padData.forEach(({osc}) => { try { osc.type=currentWave; } catch{} });
+  pad.addEventListener('click',scheduleSample);
+  pad.addEventListener('touchstart', e=>{e.preventDefault(); scheduleSample();});
 }
-
-document.getElementById('prevWave').addEventListener('click',()=>{
-  let index=waveTypes.indexOf(currentWave);
-  index=(index-1+waveTypes.length)%waveTypes.length;
-  currentWave=waveTypes[index];
-  updateActiveWaveforms();
-});
-document.getElementById('nextWave').addEventListener('click',()=>{
-  let index=waveTypes.indexOf(currentWave);
-  index=(index+1)%waveTypes.length;
-  currentWave=waveTypes[index];
-  updateActiveWaveforms();
-});
 </script>
 </body>
 </html>
