@@ -119,6 +119,16 @@ body { display:flex; justify-content:center; align-items:center; background-colo
 }
 
 #divider { width:2px; background:#333; margin:0 20px; }
+
+@media (max-width: 600px) {
+    #padRowTop, #padRowBottom {
+        justify-content: space-between;
+    }
+    .pad {
+        width: calc((100% - 5*16px)/6);
+        height: calc((50vh - 20px - 8% - 16px)/2);
+    }
+}
 </style>
 </head>
 <body>
