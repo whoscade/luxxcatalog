@@ -9,158 +9,45 @@
 @font-face { font-family:'GadetyperRegular'; src:url('fonts/GadetyperRegular.otf') format('opentype'); }
 @font-face { font-family:'timesnewarial'; src:url('fonts/timesnewarial.ttf') format('truetype'); }
 
-html, body {
-  margin:0;
-  padding:0;
-  height:100%;
-  overflow:hidden;
-  background:#ff0000;
-  font-family:monospace;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-#logo {
-  font-size:clamp(2.5rem,12vw,8rem);
-  line-height:1;
-  white-space:nowrap;
-  display:flex;
-}
-
+html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#ff0000; font-family:monospace; display:flex; justify-content:center; align-items:center; }
+#logo { font-size:clamp(2.5rem,12vw,8rem); line-height:1; white-space:nowrap; display:flex; }
 .letter { display:inline-block; }
 
-#scrollMenu {
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  height:50vh;
-  background:linear-gradient(to bottom, #000 0%, #111 100%);
-  box-shadow: inset 0 4px 12px #000, 0 4px 12px rgba(0,0,0,0.6);
-  transform:translateY(100%);
-  transition:transform 0.3s ease;
-  z-index:1000;
-  pointer-events:none;
-  display:flex;
-  flex-direction:column;
-  padding:20px;
-  box-sizing:border-box;
-  border-radius:4px;
-}
-
+#scrollMenu { position:fixed; bottom:0; left:0; width:100%; height:50vh; background:linear-gradient(to bottom, #000 0%, #111 100%); box-shadow: inset 0 4px 12px #000, 0 4px 12px rgba(0,0,0,0.6); transform:translateY(100%); transition:transform 0.3s ease; z-index:1000; pointer-events:none; display:flex; flex-direction:column; padding:20px; box-sizing:border-box; border-radius:4px; }
 #scrollMenu.active { transform:translateY(0); pointer-events:auto; }
 
-#menuBar {
-  height:12%;
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
-  color:white;
-  font-family:monospace;
-  font-size:1.1rem;
-  gap:25px;
-  border-bottom:1px solid #181818;
-  padding-bottom:8px;
-  padding-left:12px;
-}
-
-#menuBar div {
-  cursor:pointer;
-  position:relative;
-  text-transform:uppercase;
-}
-
-#menuBar div::after {
-  content:'';
-  position:absolute;
-  width:0%;
-  height:2px;
-  bottom:-2px;
-  left:0;
-  background:#ff0000;
-  transition:width 0.2s ease;
-}
-
+#menuBar { height:12%; display:flex; align-items:center; justify-content:flex-start; color:white; font-family:monospace; font-size:1.1rem; gap:25px; border-bottom:1px solid #181818; padding-bottom:8px; padding-left:12px; }
+#menuBar div { cursor:pointer; position:relative; text-transform:uppercase; }
+#menuBar div::after { content:''; position:absolute; width:0%; height:2px; bottom:-2px; left:0; background:#ff0000; transition:width 0.2s ease; }
 #menuBar div:hover::after { width:100%; }
 
-#synthArea {
-  flex:1;
-  display:flex;
-  justify-content:flex-start;
-  align-items:flex-start;
-  gap:20px;
-  padding-top:45px;
-}
-
-#pads {
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  flex-shrink:0;
-}
-
+#synthArea { flex:1; display:flex; justify-content:flex-start; align-items:flex-start; gap:20px; padding-top:45px; }
+#pads { display:flex; flex-direction:column; gap:16px; flex-shrink:0; }
 .padRow { display:flex; gap:16px; }
-
-.pad {
-  width:min(22vw,100px);
-  height:min(22vw,100px);
-  background:#181818;
-  border-radius:6px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  cursor:pointer;
-  position:relative;
-  transition:0.1s;
-  background-image:url('/imgs/button.jpg');
-  background-size:cover;
-}
-
+.pad { width:min(22vw,100px); height:min(22vw,100px); background:#181818; border-radius:6px; display:flex; justify-content:center; align-items:center; cursor:pointer; position:relative; transition:0.1s; }
 .pad:hover { box-shadow:0 0 6px #ff0000 inset; }
+.pad.active { box-shadow:0 0 6px #ff0000,0 0 12px #ff0000 inset; }
 
-.pad.active {
-  box-shadow:0 0 6px #ff0000,0 0 12px #ff0000 inset;
-}
-
-#divider {
-  width:2px;
-  background:#181818;
-  margin:0 20px;
-}
-
-#waveCanvas {
-  width:180px;
-  height:80px;
-  margin-left:-5px;
-  margin-top:0px;
-  background:#181818;
-  border-radius:6px;
-  align-self:flex-start;
-  box-shadow: inset 0 4px 12px #000;
-}
+#divider { width:2px; background:#181818; margin:0 20px; }
+#waveCanvas { width:180px; height:80px; margin-left:-5px; margin-top:39px; background:#181818; border-radius:6px; align-self:flex-start; box-shadow: inset 0 4px 12px #000; }
 </style>
 </head>
 <body>
 <div id="logo"></div>
-
 <div id="scrollMenu">
   <div id="menuBar">
     <div>ARCHIVE</div>
     <div>MAILING LIST</div>
   </div>
-
   <div id="synthArea">
     <div id="pads">
       <div class="padRow" id="padRowTop"></div>
       <div class="padRow" id="padRowBottom"></div>
     </div>
-
     <canvas id="waveCanvas" width="180" height="80"></canvas>
     <div id="divider"></div>
   </div>
 </div>
-
 <script>
 const logoText="LUXXCATALOG";
 const logo=document.getElementById('logo');
@@ -178,47 +65,25 @@ function randomizeLogo(){
 randomizeLogo();
 setInterval(randomizeLogo,117);
 
-const menu=document.getElementById('scrollMenu');
-window.addEventListener('wheel', e=>{
-  if(e.deltaY>0) menu.classList.add('active');
-  else if(e.deltaY<0) menu.classList.remove('active');
-});
-
-let touchStartY=0, touchEndY=0;
-window.addEventListener('touchstart', e=>{touchStartY=e.changedTouches[0].screenY;}, false);
-window.addEventListener('touchend', e=>{
-  touchEndY=e.changedTouches[0].screenY;
-  const diff=touchStartY-touchEndY;
-  if(diff>50) menu.classList.add('active');
-  else if(diff<-50) menu.classList.remove('active');
-}, false);
-
 const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
 const padRows=[document.getElementById('padRowTop'),document.getElementById('padRowBottom')];
 const padData=new Map();
-const canvas=document.getElementById('waveCanvas');
-const ctx=canvas.getContext('2d');
-const analyser=audioCtx.createAnalyser();
-analyser.fftSize=1024;
-const bufferLength=analyser.fftSize;
-const dataArray=new Float32Array(bufferLength);
-let displayedWave=new Float32Array(bufferLength).fill(canvas.height/2);
-
 const bpm = 140;
 const beatsPerBar = 4;
-const barLength = (60/bpm) * beatsPerBar * 2; // 2-bar loops
-let masterLoopStart = null;
+const barLength = (60/bpm) * beatsPerBar * 2;
 
+let masterLoopStart = null;
 const sampleFiles=['kick.mp3','metal_snare.mp3'];
 const sampleBuffers=[];
+let samplesLoaded=false;
 
 function loadSamples(){
-  sampleFiles.forEach((file,i)=>{
+  Promise.all(sampleFiles.map(file=>
     fetch('/sounds/'+file)
       .then(r=>r.arrayBuffer())
       .then(data=>audioCtx.decodeAudioData(data))
-      .then(buffer=>{sampleBuffers[i]=buffer;});
-  });
+      .then(buffer=>sampleBuffers.push(buffer))
+  )).then(()=>{ samplesLoaded=true; });
 }
 loadSamples();
 
@@ -226,7 +91,7 @@ function playSample(buffer,startTime){
   const source=audioCtx.createBufferSource();
   source.buffer=buffer;
   source.loop=true;
-  source.connect(analyser).connect(audioCtx.destination);
+  source.connect(audioCtx.destination);
   source.start(startTime);
   return source;
 }
@@ -236,12 +101,19 @@ function getNextGridTime(){
   return masterLoopStart + Math.ceil((now - masterLoopStart)/barLength)*barLength;
 }
 
+const canvas=document.getElementById('waveCanvas');
+const ctx=canvas.getContext('2d');
+let displayedWave=new Float32Array(canvas.width);
+
 function drawStaticWave(){
+  const w=canvas.width;
   const h=canvas.height;
-  for(let i=0;i<displayedWave.length;i++){
-    displayedWave[i]+=(h/2-displayedWave[i])*0.05;
+  for(let i=0;i<w;i++){
+    const x=i/w*2*Math.PI;
+    displayedWave[i]=h/2 + Math.sin(x)*h/2*0.8;
   }
 }
+drawStaticWave();
 
 function drawWave(){
   requestAnimationFrame(drawWave);
@@ -250,17 +122,8 @@ function drawWave(){
   ctx.lineWidth=2;
   ctx.strokeStyle='#ff0000';
   ctx.beginPath();
-  if(padData.size>0){
-    analyser.getFloatTimeDomainData(dataArray);
-    for(let i=0;i<bufferLength;i++){
-      displayedWave[i]+=((canvas.height/2 + dataArray[i]*0.8*canvas.height/2)-displayedWave[i])*0.2;
-      const x=i*canvas.width/bufferLength;
-      const y=displayedWave[i];
-      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-    }
-  } else drawStaticWave();
-  for(let i=0;i<bufferLength;i++){
-    const x=i*canvas.width/bufferLength;
+  for(let i=0;i<displayedWave.length;i++){
+    const x=i*canvas.width/displayedWave.length;
     const y=displayedWave[i];
     if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
   }
@@ -274,6 +137,7 @@ for(let i=0;i<12;i++){
   padRows[i<6?0:1].appendChild(pad);
 
   pad.addEventListener('click',()=>{
+    if(!samplesLoaded) return;
     if(pad.classList.contains('active')){
       const data=padData.get(pad);
       if(data) data.source.stop();
@@ -284,7 +148,6 @@ for(let i=0;i<12;i++){
       let buffer=null;
       if(i<sampleBuffers.length) buffer=sampleBuffers[i];
       if(!buffer) return;
-
       if(!masterLoopStart) masterLoopStart=audioCtx.currentTime;
       const startTime=getNextGridTime();
       const source=playSample(buffer,startTime);
