@@ -204,10 +204,10 @@ const bufferLength=analyser.fftSize;
 const dataArray=new Float32Array(bufferLength);
 let displayedWave=new Float32Array(bufferLength).fill(canvas.height/2);
 
-const loopLength=8; // 8-bar loops now
+const loopLength=2;
 let loopStartTime=audioCtx.currentTime;
 
-const sampleFiles=['kick.mp3','metal_snare.mp3']; // removed 808
+const sampleFiles=['kick.mp3','metal_snare.mp3'];
 const sampleBuffers=[];
 
 function loadSamples(){
