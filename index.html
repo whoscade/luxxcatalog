@@ -65,14 +65,28 @@ function randomizeLogo(){
 randomizeLogo();
 setInterval(randomizeLogo,117);
 
+const menu=document.getElementById('scrollMenu');
+window.addEventListener('wheel', (e)=>{
+  if(e.deltaY>0) menu.classList.add('active');
+  else if(e.deltaY<0) menu.classList.remove('active');
+});
+let touchStartY=0, touchEndY=0;
+window.addEventListener('touchstart', e=>{ touchStartY=e.changedTouches[0].screenY; }, false);
+window.addEventListener('touchend', e=>{
+  touchEndY=e.changedTouches[0].screenY;
+  const diff=touchStartY-touchEndY;
+  if(diff>50) menu.classList.add('active');
+  else if(diff<-50) menu.classList.remove('active');
+}, false);
+
 const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
 const padRows=[document.getElementById('padRowTop'),document.getElementById('padRowBottom')];
 const padData=new Map();
-const bpm = 140;
-const beatsPerBar = 4;
-const barLength = (60/bpm) * beatsPerBar * 2;
+const bpm=140;
+const beatsPerBar=4;
+const barLength=(60/bpm)*beatsPerBar*2;
 
-let masterLoopStart = null;
+let masterLoopStart=null;
 const sampleFiles=['kick.mp3','metal_snare.mp3'];
 const sampleBuffers=[];
 let samplesLoaded=false;
@@ -97,8 +111,8 @@ function playSample(buffer,startTime){
 }
 
 function getNextGridTime(){
-  const now = audioCtx.currentTime;
-  return masterLoopStart + Math.ceil((now - masterLoopStart)/barLength)*barLength;
+  const now=audioCtx.currentTime;
+  return masterLoopStart+Math.ceil((now-masterLoopStart)/barLength)*barLength;
 }
 
 const canvas=document.getElementById('waveCanvas');
