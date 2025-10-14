@@ -329,4 +329,34 @@ for(let i=0;i<12;i++){
       const gainNode=audioCtx.createGain();
       const now=audioCtx.currentTime;
       osc.type=currentWave;
-      osc.frequency.setValueAtTime(110*Math.pow(
+      osc.frequency.setValueAtTime(110*Math.pow(2,i/12),now);
+      gainNode.gain.setValueAtTime(0,now);
+      gainNode.gain.linearRampToValueAtTime(1,now+attack);
+      osc.connect(gainNode).connect(analyser).connect(audioCtx.destination);
+      osc.start();
+      padData.set(pad,{osc,gainNode});
+    }
+  }
+  pad.addEventListener('click',playPad);
+  pad.addEventListener('touchstart',e=>{e.preventDefault();playPad();});
+}
+
+function updateActiveWaveforms() {
+  padData.forEach(({osc}) => { try { osc.type=currentWave; } catch{} });
+}
+
+document.getElementById('prevWave').addEventListener('click',()=>{
+  let index=waveTypes.indexOf(currentWave);
+  index=(index-1+waveTypes.length)%waveTypes.length;
+  currentWave=waveTypes[index];
+  updateActiveWaveforms();
+});
+document.getElementById('nextWave').addEventListener('click',()=>{
+  let index=waveTypes.indexOf(currentWave);
+  index=(index+1)%waveTypes.length;
+  currentWave=waveTypes[index];
+  updateActiveWaveforms();
+});
+</script>
+</body>
+</html>
