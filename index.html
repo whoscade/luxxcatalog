@@ -49,10 +49,10 @@
 
     #bottomMenu {
         position: fixed;
-        bottom: -60px;
+        bottom: -80px;
         left: 0;
         width: 100%;
-        height: 60px;
+        height: 80px;
         background: black;
         display: flex;
         align-items: center;
@@ -84,7 +84,7 @@
     }
 
     #bottomMenu ul li a.menu-link:hover {
-        border-bottom: 1px solid white;
+        border-bottom: 3px solid #ff0000;
     }
 
     .separator {
@@ -132,7 +132,7 @@
         if (e.deltaY > 0) {
             bottomMenu.style.bottom = "0px";
         } else {
-            bottomMenu.style.bottom = "-60px";
+            bottomMenu.style.bottom = "-80px";
         }
     });
 
@@ -146,7 +146,7 @@
         if (touchEndY < touchStartY - 10) {
             bottomMenu.style.bottom = "0px";
         } else if (touchEndY > touchStartY + 10) {
-            bottomMenu.style.bottom = "-60px";
+            bottomMenu.style.bottom = "-80px";
         }
     });
 </script>
