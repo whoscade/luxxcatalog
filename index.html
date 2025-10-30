@@ -22,7 +22,6 @@
         margin: 0;
         padding: 0;
         height: 100%;
-        width: 100%;
         overflow: hidden;
     }
 
@@ -30,39 +29,10 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        background: url('imgs/landing.JPG') no-repeat center center fixed;
+        background-size: cover;
         overflow: hidden;
         position: relative;
-        background-color: black;
-    }
-
-    body::before {
-        content: "";
-        position: absolute;
-        inset: -20%;
-        background: url('imgs/landing.JPG') no-repeat center center;
-        background-size: cover;
-        z-index: 0;
-        transition: transform 0.5s ease-in-out;
-    }
-
-    body::after {
-        content: "";
-        position: absolute;
-        inset: -20%;
-        background: url('imgs/landing.JPG') no-repeat center center;
-        background-size: cover;
-        mix-blend-mode: overlay;
-        opacity: 0.08;
-        animation: grain 2s steps(6) infinite;
-        z-index: 1;
-        transition: transform 0.5s ease-in-out;
-    }
-
-    @keyframes grain {
-        0%, 100% { transform: translate(0, 0); }
-        25% { transform: translate(-1%, 1%); }
-        50% { transform: translate(1%, -1%); }
-        75% { transform: translate(-0.5%, 0.5%); }
     }
 
     #logo {
@@ -70,32 +40,73 @@
         line-height: 1;
         white-space: nowrap;
         display: flex;
-        z-index: 2;
+        z-index: 10;
         position: relative;
         color: white;
-        text-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
-        text-align: center;
     }
 
     .letter {
         display: inline-block;
     }
 
-    @media (max-width: 600px) {
-        body::before,
-        body::after {
-            transform: rotate(90deg) scale(1.4);
-        }
+    #bottomMenu {
+        position: fixed;
+        bottom: -80px;
+        left: 0;
+        width: 100%;
+        height: 80px;
+        background: black;
+        display: flex;
+        align-items: center;
+        padding-left: 20px;
+        z-index: 5;
+        transition: bottom 0.15s ease-in-out;
+        font-family: monospace;
+    }
 
-        #logo {
-            font-size: 2.5rem;
-        }
+    #bottomMenu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    #bottomMenu ul li {
+        margin: 0 10px;
+        color: white;
+    }
+
+    #bottomMenu ul li a.menu-link {
+        text-decoration: none;
+        color: white;
+        font-family: monospace;
+        transition: border-bottom 0.2s ease-in-out;
+        border-bottom: 1px solid transparent;
+    }
+
+    #bottomMenu ul li a.menu-link:hover {
+        border-bottom: 3px solid #ff0000;
+    }
+
+    .separator {
+        cursor: default;
+        color: white;
+        user-select: none;
     }
 </style>
 </head>
 <body>
 
 <div id="logo"></div>
+
+<div id="bottomMenu">
+    <ul>
+        <li><a href="#" class="menu-link">BROWSE</a></li>
+        <li class="separator">⎯⎯⎯⎯⎯</li>
+        <li><a href="#" class="menu-link">MAILING LIST</a></li>
+    </ul>
+</div>
 
 <script>
     const logoText = "LUXXCATALOG";
@@ -115,6 +126,30 @@
 
     randomizeLogo();
     setInterval(randomizeLogo, 117);
+
+    let bottomMenu = document.getElementById('bottomMenu');
+
+    window.addEventListener('wheel', function(e) {
+        if (e.deltaY > 0) {
+            bottomMenu.style.bottom = "0px";
+        } else {
+            bottomMenu.style.bottom = "-80px";
+        }
+    });
+
+    let touchStartY = 0;
+    window.addEventListener('touchstart', function(e) {
+        touchStartY = e.touches[0].clientY;
+    });
+
+    window.addEventListener('touchmove', function(e) {
+        let touchEndY = e.touches[0].clientY;
+        if (touchEndY < touchStartY - 10) {
+            bottomMenu.style.bottom = "0px";
+        } else if (touchEndY > touchStartY + 10) {
+            bottomMenu.style.bottom = "-80px";
+        }
+    });
 </script>
 
 </body>
