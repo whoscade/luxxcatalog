@@ -35,14 +35,23 @@
         position: relative;
     }
 
+    body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 1;
+    }
+
     #logo {
         font-size: clamp(2.5rem, 12vw, 8rem);
         line-height: 1;
         white-space: nowrap;
         display: flex;
-        z-index: 10;
+        z-index: 2;
         position: relative;
         color: white;
+        text-shadow: 0 0 25px rgba(255, 255, 255, 0.35);
     }
 
     .letter {
