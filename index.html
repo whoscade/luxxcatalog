@@ -35,23 +35,16 @@
         position: relative;
     }
 
-    body::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(255,0,0,0.15) 0%, rgba(0,0,0,0.3) 100%);
-        z-index: 1;
-    }
-
     body::after {
         content: "";
         position: absolute;
-        inset: -50%;
-        background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.03) 100%);
+        inset: 0;
+        background: url('imgs/landing.JPG') no-repeat center center fixed;
+        background-size: cover;
         mix-blend-mode: overlay;
-        opacity: 0.5;
-        animation: grain 1.5s steps(10) infinite;
-        z-index: 2;
+        opacity: 0.1;
+        animation: grain 0.4s steps(10) infinite;
+        z-index: 1;
     }
 
     @keyframes grain {
@@ -72,7 +65,7 @@
         line-height: 1;
         white-space: nowrap;
         display: flex;
-        z-index: 3;
+        z-index: 2;
         position: relative;
         color: white;
         text-shadow: 0 0 25px rgba(255, 255, 255, 0.35);
