@@ -22,6 +22,7 @@
         margin: 0;
         padding: 0;
         height: 100%;
+        width: 100%;
         overflow: hidden;
     }
 
@@ -29,8 +30,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background: url('imgs/landing.JPG') no-repeat center center fixed;
+        background: url('imgs/landing.JPG') no-repeat center center;
         background-size: cover;
+        background-attachment: scroll;
         overflow: hidden;
         position: relative;
     }
@@ -39,7 +41,7 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: url('imgs/landing.JPG') no-repeat center center fixed;
+        background: url('imgs/landing.JPG') no-repeat center center;
         background-size: cover;
         mix-blend-mode: overlay;
         opacity: 0.08;
@@ -63,10 +65,17 @@
         position: relative;
         color: white;
         text-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+        text-align: center;
     }
 
     .letter {
         display: inline-block;
+    }
+
+    @media (max-width: 600px) {
+        #logo {
+            font-size: 2.5rem;
+        }
     }
 </style>
 </head>
