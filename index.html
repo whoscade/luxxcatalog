@@ -22,7 +22,6 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    width: 100%;
     overflow: hidden;
 }
 
@@ -40,22 +39,11 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     z-index: 1;
-    opacity: 0.8;
+    opacity: 0.6;
     pointer-events: none;
-}
-
-.red-glow {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 2;
-    background: radial-gradient(circle at center, rgba(255, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.9) 70%);
 }
 
 #logo {
@@ -76,7 +64,6 @@ body {
 </head>
 <body>
 <canvas class="background-canvas"></canvas>
-<div class="red-glow"></div>
 <div id="logo"></div>
 <script>
 const logoText = "LUXXCATALOG";
@@ -102,44 +89,46 @@ window.addEventListener('load', () => {
     const gl = canvas.getContext("webgl");
     if (!gl) return;
 
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
     function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        gl.viewport(0, 0, width, height);
     }
-    resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    let mouse = { x: width / 2, y: height / 2 };
     window.addEventListener("mousemove", e => {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
     });
 
     const circleColors = [
-        [0.8, 0.1, 0.1],
         [0.7, 0.05, 0.05],
+        [0.9, 0.1, 0.1],
         [0.3, 0.0, 0.0],
         [0.1, 0.0, 0.0],
-        [0.9, 0.1, 0.1],
-        [0.0, 0.0, 0.0],
-        [0.4, 0.0, 0.0]
+        [0.6, 0.0, 0.0],
+        [0.0, 0.0, 0.0]
     ];
 
     let circles = [];
     function initCircles() {
         circles = [];
-        const baseRadius = (window.innerWidth + window.innerHeight) * 0.2;
-        const count = 7;
-        for (let i = 0; i < count; i++) {
-            const radius = baseRadius * (0.3 + Math.random() * 1.8);
-            const x = Math.random() * window.innerWidth;
-            const y = Math.random() * window.innerHeight;
-            const speed = Math.random() * 4 + 0.5;
+        const baseRadius = (width + height) * 0.2;
+        for (let i = 0; i < 6; i++) {
+            const radius = baseRadius * (0.4 + Math.random() * 1.4);
+            const x = Math.random() * width;
+            const y = Math.random() * height;
+            const speed = Math.random() * 3 + 0.2;
             const vx = (Math.random() - 0.5) * speed;
             const vy = (Math.random() - 0.5) * speed;
-            circles.push({ x, y, radius, color: circleColors[i % circleColors.length], vx, vy });
+            circles.push({ x, y, radius, color: circleColors[i], vx, vy, interactive: false });
         }
+        const interactiveRadius = (width + height) * 0.12;
+        circles.push({ x: width / 2, y: height / 2, radius: interactiveRadius, color: [0.8, 0.1, 0.1], vx: 0, vy: 0, interactive: true });
     }
     initCircles();
 
@@ -147,8 +136,8 @@ window.addEventListener('load', () => {
         attribute vec2 a_position;
         varying vec2 v_uv;
         void main(void) {
-            v_uv = a_position * 0.5 + 0.5;
-            v_uv.y = 1.0 - v_uv.y;
+            v_uv = a_position * 0.5 + 0.5; 
+            v_uv.y = 1.0 - v_uv.y; 
             gl_Position = vec4(a_position, 0.0, 1.0);
         }
     `;
@@ -158,8 +147,8 @@ window.addEventListener('load', () => {
         varying vec2 v_uv;
         uniform vec2 u_resolution;
         uniform int u_circleCount;
-        uniform vec3 u_circlesColor[8];
-        uniform vec3 u_circlesPosRad[8];
+        uniform vec3 u_circlesColor[7];
+        uniform vec3 u_circlesPosRad[7];
 
         void main(void) {
             vec2 st = v_uv * u_resolution;
@@ -170,7 +159,7 @@ window.addEventListener('load', () => {
             float fieldSum = 0.0;
             vec3 weightedColorSum = vec3(0.0);
 
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 7; i++) {
                 if (i >= u_circleCount) break;
                 vec3 posRad = u_circlesPosRad[i];
                 vec2 cPos = vec2(posRad.r, posRad.g);
@@ -183,7 +172,7 @@ window.addEventListener('load', () => {
             }
 
             vec3 finalCirclesColor = fieldSum > 0.0 ? weightedColorSum / fieldSum : vec3(0.0);
-            float intensity = pow(fieldSum, 1.2);
+            float intensity = pow(fieldSum, 1.25);
             vec3 finalColor = mix(bgColor, finalCirclesColor, clamp(intensity, 0.0, 1.0));
             gl_FragColor = vec4(finalColor, 1.0);
         }
@@ -219,31 +208,37 @@ window.addEventListener('load', () => {
     const u_circlesColor = gl.getUniformLocation(program, "u_circlesColor");
     const u_circlesPosRad = gl.getUniformLocation(program, "u_circlesPosRad");
 
-    gl.uniform2f(u_resolution, canvas.width, canvas.height);
+    gl.uniform2f(u_resolution, width, height);
 
     function updateCircles() {
-        for (let c of circles) {
-            c.x += c.vx * (0.7 + Math.random() * 0.6);
-            c.y += c.vy * (0.7 + Math.random() * 0.6);
-            if (c.x - c.radius > window.innerWidth) c.x = -c.radius;
-            if (c.x + c.radius < 0) c.x = window.innerWidth + c.radius;
-            if (c.y - c.radius > window.innerHeight) c.y = -c.radius;
-            if (c.y + c.radius < 0) c.y = window.innerHeight + c.radius;
+        for (let i = 0; i < circles.length; i++) {
+            const c = circles[i];
+            if (!c.interactive) {
+                c.x += c.vx;
+                c.y += c.vy;
+                if (c.x - c.radius > width) c.x = -c.radius;
+                if (c.x + c.radius < 0) c.x = width + c.radius;
+                if (c.y - c.radius > height) c.y = -c.radius;
+                if (c.y + c.radius < 0) c.y = height + c.radius;
+            } else {
+                c.x += (mouse.x - c.x) * 0.03;
+                c.y += (mouse.y - c.y) * 0.03;
+            }
         }
     }
 
     function render() {
         updateCircles();
-        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.viewport(0, 0, width, height);
         gl.clearColor(0, 0, 0, 1);
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.useProgram(program);
         gl.uniform1i(u_circleCount, circles.length);
-        gl.uniform2f(u_resolution, canvas.width, canvas.height);
+        gl.uniform2f(u_resolution, width, height);
 
-        const colorsArr = [];
-        const posRadArr = [];
-        for (let i = 0; i < 8; i++) {
+        let colorsArr = [];
+        let posRadArr = [];
+        for (let i = 0; i < 7; i++) {
             if (i < circles.length) {
                 const c = circles[i];
                 colorsArr.push(c.color[0], c.color[1], c.color[2]);
