@@ -1,150 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LUXXCATALOG</title>
 <style>
-@font-face {
-    font-family: 'Experimento';
-    src: url('fonts/Experimento.ttf') format('truetype');
-}
-@font-face {
-    font-family: 'GadetyperRegular';
-    src: url('fonts/GadetyperRegular.otf') format('opentype');
-}
-@font-face {
-    font-family: 'timesnewarial';
-    src: url('fonts/timesnewarial.ttf') format('truetype');
-}
-html,body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-    background: black;
-}
-canvas {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    display: block;
-}
-#logo {
-    font-size: clamp(2.5rem, 12vw, 8rem);
-    line-height: 1;
-    white-space: nowrap;
-    display: flex;
-    z-index: 10;
-    position: relative;
-    color: white;
-    mix-blend-mode: difference;
-}
-.letter {
-    display: inline-block;
-}
-.center {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    pointer-events: none;
-    z-index: 10;
-}
+    @font-face {
+        font-family: 'Experimento';
+        src: url('fonts/Experimento.ttf') format('truetype');
+    }
+    @font-face {
+        font-family: 'GadetyperRegular';
+        src: url('fonts/GadetyperRegular.otf') format('opentype');
+    }
+    @font-face {
+        font-family: 'timesnewarial';
+        src: url('fonts/timesnewarial.ttf') format('truetype');
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #ff0000 url('imgs/landing.jpg') no-repeat center center fixed;
+        background-size: cover;
+        overflow: hidden;
+        position: relative;
+    }
+
+    #logo {
+        font-size: clamp(2.5rem, 12vw, 8rem);
+        line-height: 1;
+        white-space: nowrap;
+        display: flex;
+        z-index: 10;
+        position: relative;
+        color: white;
+    }
+
+    .letter {
+        display: inline-block;
+    }
 </style>
 </head>
 <body>
-<canvas id="lava"></canvas>
-<div class="center">
-    <div id="logo"></div>
-</div>
+
+<div id="logo"></div>
+
 <script>
-const canvas = document.getElementById("lava");
-const ctx = canvas.getContext("2d");
-let w, h;
-function resize() {
-    w = canvas.width = innerWidth;
-    h = canvas.height = innerHeight;
-}
-window.addEventListener("resize", resize);
-resize();
+    const logoText = "LUXXCATALOG";
+    const logo = document.getElementById('logo');
+    const fonts = ['Experimento', 'GadetyperRegular', 'timesnewarial'];
 
-const blobs = [];
-const blobCount = 6;
-for (let i = 0; i < blobCount; i++) {
-    blobs.push({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        r: Math.random() * 200 + 250,
-        dx: (Math.random() - 0.5) * 0.4,
-        dy: (Math.random() - 0.5) * 0.4
-    });
-}
-
-function animate() {
-    ctx.clearRect(0, 0, w, h);
-    const imgData = ctx.createImageData(w, h);
-    const data = imgData.data;
-
-    for (let y = 0; y < h; y += 3) {
-        for (let x = 0; x < w; x += 3) {
-            let sum = 0;
-            for (let i = 0; i < blobs.length; i++) {
-                const b = blobs[i];
-                const dx = x - b.x;
-                const dy = y - b.y;
-                sum += (b.r * b.r) / (dx * dx + dy * dy);
-            }
-            const index = (x + y * w) * 4;
-            const intensity = Math.min(255, sum * 2);
-            data[index] = 150 + intensity * 0.4;
-            data[index + 1] = intensity * 0.05;
-            data[index + 2] = intensity * 0.05;
-            data[index + 3] = 255;
+    function randomizeLogo() {
+        logo.innerHTML = '';
+        for (let char of logoText) {
+            const span = document.createElement('span');
+            span.classList.add('letter');
+            span.textContent = char;
+            span.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+            logo.appendChild(span);
         }
     }
-    ctx.putImageData(imgData, 0, 0);
 
-    ctx.globalCompositeOperation = "screen";
-    const grad = ctx.createRadialGradient(w / 2, h / 2, w * 0.2, w / 2, h / 2, w * 0.9);
-    grad.addColorStop(0, "rgba(255,60,60,0.7)");
-    grad.addColorStop(1, "rgba(0,0,0,1)");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, w, h);
-    ctx.globalCompositeOperation = "source-over";
-
-    for (let i = 0; i < blobs.length; i++) {
-        const b = blobs[i];
-        b.x += b.dx;
-        b.y += b.dy;
-        if (b.x - b.r > w) b.x = -b.r;
-        if (b.x + b.r < 0) b.x = w + b.r;
-        if (b.y - b.r > h) b.y = -b.r;
-        if (b.y + b.r < 0) b.y = h + b.r;
-    }
-
-    requestAnimationFrame(animate);
-}
-animate();
-
-const logoText = "LUXXCATALOG";
-const logo = document.getElementById("logo");
-const fonts = ["Experimento", "GadetyperRegular", "timesnewarial"];
-function randomizeLogo() {
-    logo.innerHTML = "";
-    for (let char of logoText) {
-        const span = document.createElement("span");
-        span.classList.add("letter");
-        span.textContent = char;
-        span.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
-        logo.appendChild(span);
-    }
-}
-randomizeLogo();
-setInterval(randomizeLogo, 117);
+    randomizeLogo();
+    setInterval(randomizeLogo, 117);
 </script>
+
 </body>
 </html>
