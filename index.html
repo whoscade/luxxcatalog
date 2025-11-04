@@ -42,7 +42,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: 1;
-    opacity: 0.55;
+    opacity: 0.6;
     pointer-events: none;
 }
 
@@ -54,6 +54,7 @@ body {
     z-index: 10;
     position: relative;
     color: white;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
 }
 
 .letter {
@@ -105,29 +106,29 @@ window.addEventListener('load', () => {
     });
 
     const circleColors = [
-        [0.6, 0, 0],
         [0.7, 0.05, 0.05],
-        [0.3, 0, 0],
-        [0.4, 0.02, 0.02],
-        [0.5, 0.05, 0.05],
-        [0.9, 0.1, 0.1]
+        [0.9, 0.1, 0.1],
+        [0.3, 0.0, 0.0],
+        [0.1, 0.0, 0.0],
+        [0.6, 0.0, 0.0],
+        [0.0, 0.0, 0.0]
     ];
 
     let circles = [];
     function initCircles() {
         circles = [];
-        const baseRadius = (width + height) * 0.18;
-        for (let i = 0; i < 5; i++) {
-            const radius = baseRadius;
+        const baseRadius = (width + height) * 0.2;
+        for (let i = 0; i < 6; i++) {
+            const radius = baseRadius * (0.4 + Math.random() * 1.4);
             const x = Math.random() * width;
             const y = Math.random() * height;
-            const speed = Math.random() * 2 + 0.5;
+            const speed = Math.random() * 3 + 0.2;
             const vx = (Math.random() - 0.5) * speed;
             const vy = (Math.random() - 0.5) * speed;
             circles.push({ x, y, radius, color: circleColors[i], vx, vy, interactive: false });
         }
-        const interactiveRadius = (width + height) * 0.1;
-        circles.push({ x: width / 2, y: height / 2, radius: interactiveRadius, color: circleColors[5], vx: 0, vy: 0, interactive: true });
+        const interactiveRadius = (width + height) * 0.12;
+        circles.push({ x: width / 2, y: height / 2, radius: interactiveRadius, color: [0.8, 0.1, 0.1], vx: 0, vy: 0, interactive: true });
     }
     initCircles();
 
@@ -146,8 +147,8 @@ window.addEventListener('load', () => {
         varying vec2 v_uv;
         uniform vec2 u_resolution;
         uniform int u_circleCount;
-        uniform vec3 u_circlesColor[6];
-        uniform vec3 u_circlesPosRad[6];
+        uniform vec3 u_circlesColor[7];
+        uniform vec3 u_circlesPosRad[7];
 
         void main(void) {
             vec2 st = v_uv * u_resolution;
@@ -158,20 +159,20 @@ window.addEventListener('load', () => {
             float fieldSum = 0.0;
             vec3 weightedColorSum = vec3(0.0);
 
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 7; i++) {
                 if (i >= u_circleCount) break;
                 vec3 posRad = u_circlesPosRad[i];
                 vec2 cPos = vec2(posRad.r, posRad.g);
                 float radius = posRad.b;
                 float dist = length(st - cPos);
-                float sigma = radius * 0.45;
+                float sigma = radius * 0.5;
                 float val = exp(- (dist * dist) / (2.0 * sigma * sigma));
                 fieldSum += val;
                 weightedColorSum += u_circlesColor[i] * val;
             }
 
             vec3 finalCirclesColor = fieldSum > 0.0 ? weightedColorSum / fieldSum : vec3(0.0);
-            float intensity = pow(fieldSum, 1.3);
+            float intensity = pow(fieldSum, 1.25);
             vec3 finalColor = mix(bgColor, finalCirclesColor, clamp(intensity, 0.0, 1.0));
             gl_FragColor = vec4(finalColor, 1.0);
         }
@@ -220,8 +221,8 @@ window.addEventListener('load', () => {
                 if (c.y - c.radius > height) c.y = -c.radius;
                 if (c.y + c.radius < 0) c.y = height + c.radius;
             } else {
-                c.x += (mouse.x - c.x) * 0.05;
-                c.y += (mouse.y - c.y) * 0.05;
+                c.x += (mouse.x - c.x) * 0.03;
+                c.y += (mouse.y - c.y) * 0.03;
             }
         }
     }
@@ -237,7 +238,7 @@ window.addEventListener('load', () => {
 
         let colorsArr = [];
         let posRadArr = [];
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 7; i++) {
             if (i < circles.length) {
                 const c = circles[i];
                 colorsArr.push(c.color[0], c.color[1], c.color[2]);
