@@ -19,8 +19,8 @@ function createCircles() {
             x: Math.random() * width,
             y: Math.random() * height,
             radius: Math.random() * 120 + 20,
-            dx: (Math.random() - 0.5) * 0.2,
-            dy: (Math.random() - 0.5) * 0.2,
+            dx: (Math.random() - 0.5) * 0.3,
+            dy: (Math.random() - 0.5) * 0.3,
             color: Math.random() > 0.6 ? 'rgba(0, 0, 0, 0.45)' : 'rgba(120, 0, 0, 0.45)'
         });
     }
@@ -28,7 +28,7 @@ function createCircles() {
 
 createCircles();
 
-let mouse = { x: width / 2, y: height / 2 };
+let mouse = { x: 0, y: 0 };
 
 window.addEventListener('mousemove', e => {
     mouse.x = e.clientX;
@@ -41,14 +41,18 @@ function animate() {
     circles.forEach(circle => {
         const dx = mouse.x - circle.x;
         const dy = mouse.y - circle.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
-        circle.x += dx * 0.0008 + circle.dx;
-        circle.y += dy * 0.0008 + circle.dy;
+        if (distance < 400) {
+            circle.x += dx * 0.02;
+            circle.y += dy * 0.02;
+        }
 
-        if (circle.x < -200) circle.x = width + 200;
-        if (circle.x > width + 200) circle.x = -200;
-        if (circle.y < -200) circle.y = height + 200;
-        if (circle.y > height + 200) circle.y = -200;
+        circle.x += circle.dx;
+        circle.y += circle.dy;
+
+        if (circle.x < 0 || circle.x > width) circle.dx *= -1;
+        if (circle.y < 0 || circle.y > height) circle.dy *= -1;
 
         ctx.beginPath();
         ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
