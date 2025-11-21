@@ -12,7 +12,6 @@ window.addEventListener('load', () => {
     canvas.style.width = width + 'px';
     canvas.style.height = height + 'px';
     gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.scale(dpr, dpr);
 
     function resizeCanvas() {
         width = window.innerWidth;
