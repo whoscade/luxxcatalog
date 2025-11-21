@@ -105,7 +105,7 @@ window.addEventListener('load', () => {
             vec3 finalCirclesColor = fieldSum > 0.0 ? weightedColorSum / fieldSum : vec3(0.0);
             float intensity = pow(fieldSum, 1.15);
             vec3 finalColor = mix(bgColor, finalCirclesColor, clamp(intensity, 0.0, 1.0));
-            gl_FragColor = vec4(finalColor, 0.7);
+            gl_FragColor = vec4(finalColor, 0.75);
         }
     `;
 
