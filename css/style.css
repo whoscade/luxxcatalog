@@ -1,40 +1,57 @@
+@font-face {
+    font-family: 'Experimento';
+    src: url('../fonts/Experimento.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'GadetyperRegular';
+    src: url('../fonts/GadetyperRegular.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'timesnewarial';
+    src: url('../fonts/timesnewarial.ttf') format('truetype');
+}
+
 html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
 }
 
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #000 url('../imgs/landing.jpg') no-repeat center center fixed;
-  background-size: cover;
-  overflow: hidden;
-  position: relative;
-}
-
-#logo {
-  font-size: clamp(2.5rem, 12vw, 8rem);
-  line-height: 1;
-  white-space: nowrap;
-  display: flex;
-  z-index: 5;
-  position: relative;
-  color: white;
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000 url('../imgs/landing.jpg') no-repeat center center fixed;
+    background-size: cover;
+    overflow: hidden;
+    position: relative;
 }
 
 .background-canvas {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-  pointer-events: none;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+}
+
+#logo {
+    font-size: clamp(2.5rem, 12vw, 8rem);
+    line-height: 1;
+    white-space: nowrap;
+    display: flex;
+    position: relative;
+    z-index: 5;
+    color: white;
+    text-shadow:
+        0 0 6px rgba(255, 255, 255, 0.35),
+        0 0 14px rgba(255, 255, 255, 0.15);
 }
 
 .letter {
-  display: inline-block;
+    display: inline-block;
 }
