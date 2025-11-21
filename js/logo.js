@@ -13,5 +13,7 @@ function randomizeLogo() {
     }
 }
 
-randomizeLogo();
-setInterval(randomizeLogo, 117);
+window.addEventListener('load', () => {
+    randomizeLogo();
+    setInterval(randomizeLogo, 117);
+});
