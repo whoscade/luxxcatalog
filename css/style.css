@@ -15,15 +15,6 @@ body {
   position: relative;
 }
 
-.background-canvas {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1;
-  pointer-events: none;
-}
-
 #logo {
   font-size: clamp(2.5rem, 12vw, 8rem);
   line-height: 1;
@@ -33,6 +24,15 @@ body {
   position: relative;
   color: white;
   text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+}
+
+.background-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .letter {
