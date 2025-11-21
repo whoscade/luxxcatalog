@@ -33,11 +33,11 @@ window.addEventListener('load', () => {
     });
 
     const circleColors = [
-        [0.7, 0.05, 0.05],
-        [0.9, 0.1, 0.1],
-        [0.3, 0.0, 0.0],
+        [0.55, 0.03, 0.03],
+        [0.4, 0.0, 0.0],
+        [0.25, 0.0, 0.0],
         [0.1, 0.0, 0.0],
-        [0.6, 0.0, 0.0],
+        [0.15, 0.0, 0.0],
         [0.0, 0.0, 0.0]
     ];
 
@@ -58,7 +58,7 @@ window.addEventListener('load', () => {
         }
 
         const interactiveRadius = (width + height) * 0.12;
-        circles.push({ x: width / 2, y: height / 2, radius: interactiveRadius, color: [0.8, 0.1, 0.1], vx: 0, vy: 0, interactive: true });
+        circles.push({ x: width / 2, y: height / 2, radius: interactiveRadius, color: [0.5, 0.02, 0.02], vx: 0, vy: 0, interactive: true });
     }
 
     initCircles();
@@ -83,8 +83,8 @@ window.addEventListener('load', () => {
 
         void main(void) {
             vec2 st = v_uv * u_resolution;
-            vec3 topColor = vec3(0.15, 0.0, 0.0);
-            vec3 bottomColor = vec3(0.02, 0.0, 0.0);
+            vec3 topColor = vec3(0.08, 0.0, 0.0);
+            vec3 bottomColor = vec3(0.0, 0.0, 0.0);
             vec3 bgColor = mix(topColor, bottomColor, st.y / u_resolution.y);
 
             float fieldSum = 0.0;
@@ -103,9 +103,9 @@ window.addEventListener('load', () => {
             }
 
             vec3 finalCirclesColor = fieldSum > 0.0 ? weightedColorSum / fieldSum : vec3(0.0);
-            float intensity = pow(fieldSum, 1.25);
+            float intensity = pow(fieldSum, 1.15);
             vec3 finalColor = mix(bgColor, finalCirclesColor, clamp(intensity, 0.0, 1.0));
-            gl_FragColor = vec4(finalColor, 1.0);
+            gl_FragColor = vec4(finalColor, 0.8);
         }
     `;
 
