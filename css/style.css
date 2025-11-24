@@ -48,6 +48,12 @@ body {
     mix-blend-mode: normal;
 }
 
+.glitch-block {
+    position: absolute;
+    background: #000;
+    opacity: 0.9;
+}
+
 .edge-glow {
     position: fixed;
     top: 0;
