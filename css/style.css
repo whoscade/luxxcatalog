@@ -74,7 +74,7 @@ body {
     display: flex;
     color: white;
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.35));
-    position: relative;
+    position: fixed;
     z-index: 20;
 }
     
