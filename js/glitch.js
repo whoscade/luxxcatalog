@@ -1,38 +1,46 @@
-const glitchCanvas = document.querySelector('.glitch-layer');
-const ctx = glitchCanvas.getContext('2d');
+const glitchLayer = document.querySelector('.glitch-layer');
 
-function resizeGlitch() {
-    glitchCanvas.width = window.innerWidth;
-    glitchCanvas.height = window.innerHeight;
+function createGlitchBlock() {
+    const block = document.createElement('div');
+
+    const isVertical = Math.random() < 0.5;
+
+    const width = isVertical
+        ? Math.random() * 40 + 8
+        : Math.random() * 40 + 20;
+
+    const height = isVertical
+        ? Math.random() * 200 + 40
+        : width;
+
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight;
+
+    block.style.position = 'absolute';
+    block.style.left = `${x}px`;
+    block.style.top = `${y}px`;
+    block.style.width = `${width}px`;
+    block.style.height = `${height}px`;
+    block.style.background = 'black';
+    block.style.opacity = Math.random() * 0.8 + 0.2;
+
+    glitchLayer.appendChild(block);
+
+    const life = Math.random() * 150 + 30;
+
+    setTimeout(() => {
+        block.remove();
+    }, life);
 }
 
-window.addEventListener('resize', resizeGlitch);
-resizeGlitch();
-
-function drawGlitch() {
-    ctx.clearRect(0, 0, glitchCanvas.width, glitchCanvas.height);
-
-    const squareCount = Math.floor(Math.random() * 8) + 2;
-
-    for (let i = 0; i < squareCount; i++) {
-        const size = Math.random() * 120 + 20;
-        const x = Math.random() * glitchCanvas.width;
-        const y = Math.random() * glitchCanvas.height;
-        ctx.fillStyle = 'black';
-        ctx.fillRect(x, y, size, size);
+// rare + unpredictable timing
+function glitchLoop() {
+    if (Math.random() < 0.15) {
+        createGlitchBlock();
     }
 
-    setTimeout(() => {
-        ctx.clearRect(0, 0, glitchCanvas.width, glitchCanvas.height);
-    }, 40);
+    const next = Math.random() * 1200 + 400;
+    setTimeout(glitchLoop, next);
 }
 
-function randomGlitchLoop() {
-    const delay = Math.random() * 5000 + 2000;
-    setTimeout(() => {
-        drawGlitch();
-        randomGlitchLoop();
-    }, delay);
-}
-
-randomGlitchLoop();
+glitchLoop();
