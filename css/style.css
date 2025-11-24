@@ -70,13 +70,18 @@ body {
 }
 
 #logo {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     font-size: clamp(2.5rem, 12vw, 8rem);
     line-height: 1;
     white-space: nowrap;
-    display: flex;
     color: white;
+
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.35));
-    position: relative;
     z-index: 20;
 }
     
