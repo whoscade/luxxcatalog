@@ -1,58 +1,50 @@
 const glitchCanvas = document.querySelector('.glitch-layer');
 const ctx = glitchCanvas.getContext('2d');
 
-let width = window.innerWidth;
-let height = window.innerHeight;
+let w = window.innerWidth;
+let h = window.innerHeight;
 
 function resize() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    glitchCanvas.width = width;
-    glitchCanvas.height = height;
+    w = window.innerWidth;
+    h = window.innerHeight;
+    glitchCanvas.width = w;
+    glitchCanvas.height = h;
 }
 resize();
 window.addEventListener('resize', resize);
 
 let glitches = [];
-let nextGlitchTime = performance.now() + Math.random() * 3000 + 1500;
 
-function createGlitch() {
-    if (glitches.length >= 5) return;
+function spawnGlitch() {
+    if (glitches.length >= 4) return;
 
     const vertical = Math.random() > 0.5;
-    const w = vertical ? Math.random() * 40 + 10 : Math.random() * 120 + 20;
-    const h = vertical ? Math.random() * 200 + 40 : Math.random() * 40 + 10;
 
     glitches.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        w,
-        h,
-        life: Math.random() * 80 + 40
+        x: Math.random() * w,
+        y: Math.random() * h,
+        width: vertical ? 10 + Math.random() * 30 : 40 + Math.random() * 120,
+        height: vertical ? 60 + Math.random() * 180 : 10 + Math.random() * 30,
+        life: 10 + Math.random() * 15
     });
 }
 
-function renderGlitch(time) {
-    ctx.globalCompositeOperation = "source-over";
-    ctx.clearRect(0, 0, glitchCanvas.width, glitchCanvas.height);
+function loop() {
+    ctx.clearRect(0, 0, w, h);
 
-    if (time > nextGlitchTime) {
-        createGlitch();
-        if (Math.random() > 0.6) createGlitch();
-        nextGlitchTime = time + Math.random() * 7000 + 4000;
+    if (Math.random() < 0.15) {
+        spawnGlitch();
     }
 
-    glitches = glitches.filter(g => {
-        g.life -= 16;
-        return g.life > 0;
-    });
-
-    ctx.fillStyle = "#000";
     glitches.forEach(g => {
-        ctx.fillRect(g.x, g.y, g.w, g.h);
+        ctx.fillStyle = "#000";
+        ctx.fillRect(g.x, g.y, g.width, g.height);
+        g.life--;
     });
 
-    requestAnimationFrame(renderGlitch);
+    glitches = glitches.filter(g => g.life > 0);
+
+    requestAnimationFrame(loop);
 }
 
-requestAnimationFrame(renderGlitch);
+loop();
