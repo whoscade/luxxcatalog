@@ -1,42 +1,60 @@
-const glitchLayer = document.querySelector('.glitch-layer');
+const glitchCanvas = document.querySelector('.glitch-layer')
+const gtx = glitchCanvas.getContext('2d')
 
-function createGlitchBlock() {
-    const block = document.createElement('div');
-
-    const sizeW = Math.random() > 0.5 
-        ? Math.random() * 200 + 50
-        : Math.random() * 80 + 30;
-
-    const sizeH = Math.random() > 0.5
-        ? Math.random() * 200 + 50
-        : Math.random() * 80 + 30;
-
-    block.style.position = 'absolute';
-    block.style.width = sizeW + 'px';
-    block.style.height = sizeH + 'px';
-    block.style.background = 'black';
-    block.style.top = Math.random() * window.innerHeight + 'px';
-    block.style.left = Math.random() * window.innerWidth + 'px';
-    block.style.opacity = '1';
-
-    glitchLayer.appendChild(block);
-
-    const lifetime = Math.random() * 120 + 40; 
-
-    setTimeout(() => {
-        block.remove();
-    }, lifetime);
+function resizeGlitchCanvas() {
+  glitchCanvas.width = window.innerWidth
+  glitchCanvas.height = window.innerHeight
 }
 
-function triggerGlitch() {
-    const blocksOnScreen = Math.floor(Math.random() * 2) + 1;
+resizeGlitchCanvas()
+window.addEventListener('resize', resizeGlitchCanvas)
 
-    for (let i = 0; i < blocksOnScreen; i++) {
-        createGlitchBlock();
+function random(min, max) {
+  return Math.random() * (max - min) + min
+}
+
+function spawnGlitchBlock() {
+  const maxBlocks = Math.floor(random(1, 5))
+  const blocks = []
+
+  for (let i = 0; i < maxBlocks; i++) {
+    const w = random(20, 180)
+    const h = Math.random() > 0.4 ? random(60, 300) : w
+    const x = random(0, glitchCanvas.width)
+    const y = random(0, glitchCanvas.height)
+    const life = random(20, 60)
+
+    blocks.push({ x, y, w, h, life })
+  }
+
+  function drawBlocks() {
+    gtx.clearRect(0, 0, glitchCanvas.width, glitchCanvas.height)
+
+    blocks.forEach(block => {
+      gtx.fillStyle = 'rgba(0,0,0,1)'
+      gtx.fillRect(block.x, block.y, block.w, block.h)
+      block.life -= 16
+    })
+
+    if (blocks.some(b => b.life > 0)) {
+      requestAnimationFrame(drawBlocks)
+    } else {
+      gtx.clearRect(0, 0, glitchCanvas.width, glitchCanvas.height)
     }
+  }
 
-    const nextGlitchDelay = Math.random() * 6000 + 2500;
-    setTimeout(triggerGlitch, nextGlitchDelay);
+  drawBlocks()
 }
 
-triggerGlitch();
+function randomGlitchLoop() {
+  const delay = random(4000, 30000)
+
+  setTimeout(() => {
+    if (Math.random() > 0.35) {
+      spawnGlitchBlock()
+    }
+    randomGlitchLoop()
+  }, delay)
+}
+
+randomGlitchLoop()
