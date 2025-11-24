@@ -14,7 +14,7 @@ resize();
 window.addEventListener('resize', resize);
 
 let glitches = [];
-let nextGlitchTime = performance.now() + Math.random() * 6000 + 4000;
+let nextGlitchTime = performance.now() + Math.random() * 3000 + 1500;
 
 function createGlitch() {
     if (glitches.length >= 5) return;
