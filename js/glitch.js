@@ -1,43 +1,58 @@
-const glitchCanvas = document.querySelector('.glitch-layer')
-const ctx = glitchCanvas.getContext('2d')
+const glitchCanvas = document.querySelector('.glitch-layer');
+const ctx = glitchCanvas.getContext('2d');
+
+let width = window.innerWidth;
+let height = window.innerHeight;
 
 function resize() {
-    glitchCanvas.width = window.innerWidth
-    glitchCanvas.height = window.innerHeight
+    width = window.innerWidth;
+    height = window.innerHeight;
+    glitchCanvas.width = width;
+    glitchCanvas.height = height;
 }
-resize()
-window.addEventListener('resize', resize)
+resize();
+window.addEventListener('resize', resize);
 
-function randomBetween(min, max) {
-    return Math.random() * (max - min) + min
+let glitches = [];
+let nextGlitchTime = performance.now() + Math.random() * 6000 + 4000;
+
+function createGlitch() {
+    if (glitches.length >= 5) return;
+
+    const vertical = Math.random() > 0.5;
+    const w = vertical ? Math.random() * 40 + 10 : Math.random() * 120 + 20;
+    const h = vertical ? Math.random() * 200 + 40 : Math.random() * 40 + 10;
+
+    glitches.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        w,
+        h,
+        life: Math.random() * 80 + 40
+    });
 }
 
-function spawnGlitch() {
-    const blocks = Math.random() < 0.7 ? 1 : Math.floor(randomBetween(2, 5))
+function renderGlitch(time) {
+    ctx.globalCompositeOperation = "source-over";
+    ctx.clearRect(0, 0, glitchCanvas.width, glitchCanvas.height);
 
-    for (let i = 0; i < blocks; i++) {
-        const x = Math.random() * glitchCanvas.width
-        const y = Math.random() * glitchCanvas.height
-
-        const w = randomBetween(20, 160)
-        const h = randomBetween(20, 220)
-
-        const lifespan = randomBetween(20, 60)
-
-        ctx.fillStyle = 'rgba(0,0,0,1)'
-        ctx.fillRect(x, y, w, h)
-
-        setTimeout(() => {
-            ctx.clearRect(x, y, w, h)
-        }, lifespan)
+    if (time > nextGlitchTime) {
+        createGlitch();
+        if (Math.random() > 0.6) createGlitch();
+        nextGlitchTime = time + Math.random() * 7000 + 4000;
     }
 
-    scheduleNext()
+    glitches = glitches.filter(g => {
+        g.life -= 16;
+        return g.life > 0;
+    });
+
+    ctx.fillStyle = "#000";
+    glitches.forEach(g => {
+        ctx.fillRect(g.x, g.y, g.w, g.h);
+    });
+
+    requestAnimationFrame(renderGlitch);
 }
 
-function scheduleNext() {
-    const delay = randomBetween(4000, 30000)
-    setTimeout(spawnGlitch, delay)
-}
-
-scheduleNext()
+requestAnimationFrame(renderGlitch);
