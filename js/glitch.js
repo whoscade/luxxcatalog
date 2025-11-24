@@ -1,34 +1,42 @@
 const glitchLayer = document.querySelector('.glitch-layer');
-let activeBlocks = 0;
 
-function spawnGlitchBlock() {
-    if (activeBlocks >= 2) return;
-
+function createGlitchBlock() {
     const block = document.createElement('div');
-    block.classList.add('glitch-block');
 
-    const isVertical = Math.random() > 0.5;
-    const width = isVertical ? Math.random() * 40 + 20 : Math.random() * 60 + 20;
-    const height = isVertical ? Math.random() * 120 + 40 : width;
+    const sizeW = Math.random() > 0.5 
+        ? Math.random() * 200 + 50
+        : Math.random() * 80 + 30;
 
-    block.style.width = width + 'px';
-    block.style.height = height + 'px';
-    block.style.left = Math.random() * window.innerWidth + 'px';
+    const sizeH = Math.random() > 0.5
+        ? Math.random() * 200 + 50
+        : Math.random() * 80 + 30;
+
+    block.style.position = 'absolute';
+    block.style.width = sizeW + 'px';
+    block.style.height = sizeH + 'px';
+    block.style.background = 'black';
     block.style.top = Math.random() * window.innerHeight + 'px';
+    block.style.left = Math.random() * window.innerWidth + 'px';
+    block.style.opacity = '1';
 
     glitchLayer.appendChild(block);
-    activeBlocks++;
 
-    const lifespan = Math.random() * 120 + 50;
+    const lifetime = Math.random() * 120 + 40; 
+
     setTimeout(() => {
         block.remove();
-        activeBlocks--;
-    }, lifespan);
-}
-function glitchLoop() {
-    const delay = Math.random() * 4000 + 2500;
-    if (Math.random() > 0.4) spawnGlitchBlock();
-    setTimeout(glitchLoop, delay);
+    }, lifetime);
 }
 
-glitchLoop();
+function triggerGlitch() {
+    const blocksOnScreen = Math.floor(Math.random() * 2) + 1;
+
+    for (let i = 0; i < blocksOnScreen; i++) {
+        createGlitchBlock();
+    }
+
+    const nextGlitchDelay = Math.random() * 6000 + 2500;
+    setTimeout(triggerGlitch, nextGlitchDelay);
+}
+
+triggerGlitch();
