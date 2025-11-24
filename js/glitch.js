@@ -28,7 +28,7 @@ function createGlitch() {
         y: Math.random() * height,
         w,
         h,
-        life: Math.random() * 80 + 40
+        life: Math.random() * 15 + 5
     });
 }
 
