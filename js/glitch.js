@@ -36,7 +36,7 @@ function spawnGlitch() {
 }
 
 function scheduleNext() {
-    const delay = randomBetween(2000, 8000)
+    const delay = randomBetween(4000, 30000)
     setTimeout(spawnGlitch, delay)
 }
 
